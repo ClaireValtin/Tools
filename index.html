@@ -5,65 +5,93 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tools · Soufiyan Rehioui</title>
 <meta name="description" content="One-click launcher for my genetics and lab web tools.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 30V14' stroke='%232f7a3e' stroke-width='2.4' stroke-linecap='round' fill='none'/%3E%3Cpath d='M16 14a6 6 0 1 1 6-6 3.4 3.4 0 1 1-3.4-3.4' stroke='%232f7a3e' stroke-width='2.4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..800,0..100&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ───────────── Theme ───────────── */
 :root {
-  --bg: #f0f2f1;
-  --surface: #ffffff;
-  --surface-2: #f6f8f7;
-  --border: #dde3e0;
-  --text: #121614;
-  --muted: #5f6b66;
-  --faint: #8a9590;
-  --green: #0f7a4f;
-  --turq: #128a80;
-  --orange: #c4620c;
-  --grey: #5b6461;
+  --bg: #edf0e6;
+  --bg-glow: rgba(255, 248, 214, .75);
+  --bg-moss: rgba(122, 156, 96, .22);
+  --surface: rgba(252, 251, 246, .86);
+  --surface-solid: #fcfbf6;
+  --surface-2: #f3f3ea;
+  --border: #d7dbcc;
+  --text: #17201a;
+  --muted: #55625a;
+  --faint: #86918a;
+  --green: #2f7a3e;
+  --moss: #6b7f23;
+  --turq: #1d7f77;
+  --orange: #b4572a;
+  --ochre: #9a7417;
+  --grey: #68716b;
   --band-dark: #2a302d;
   --band-light: #d9dedb;
-  --ring: #128a80;
-  --shadow: 0 1px 2px rgba(18,22,20,.06), 0 8px 24px -12px rgba(18,22,20,.18);
+  --ring: #1d7f77;
+  --frond: #3d6a3a;
+  --frond-2: #6f9455;
+  --flora-opacity: 1;
+  --firefly: 0;
+  --shadow: 0 1px 2px rgba(23,32,26,.05), 0 10px 28px -14px rgba(38,58,34,.28);
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f1211;
-    --surface: #171c1a;
-    --surface-2: #1c2220;
-    --border: #29312e;
-    --text: #e7ecea;
-    --muted: #9aa6a1;
-    --faint: #6d7873;
-    --green: #35c27b;
-    --turq: #3cc9bb;
-    --orange: #f2913a;
-    --grey: #a3ada9;
+    --bg: #0b120e;
+    --bg-glow: rgba(70, 120, 80, .16);
+    --bg-moss: rgba(40, 80, 55, .28);
+    --surface: rgba(19, 28, 23, .82);
+    --surface-solid: #131c17;
+    --surface-2: #18231d;
+    --border: #25332a;
+    --text: #e5ece6;
+    --muted: #9db0a4;
+    --faint: #6c7e72;
+    --green: #62c983;
+    --moss: #b2c75a;
+    --turq: #4cc8ba;
+    --orange: #ec8f5e;
+    --ochre: #d9b453;
+    --grey: #a5b0a8;
     --band-dark: #cfd6d3;
     --band-light: #2a312e;
-    --ring: #3cc9bb;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
+    --ring: #4cc8ba;
+    --frond: #3b7550;
+    --frond-2: #285a3e;
+    --flora-opacity: .8;
+    --firefly: 1;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 30px -14px rgba(0,0,0,.75);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0f1211;
-  --surface: #171c1a;
-  --surface-2: #1c2220;
-  --border: #29312e;
-  --text: #e7ecea;
-  --muted: #9aa6a1;
-  --faint: #6d7873;
-  --green: #35c27b;
-  --turq: #3cc9bb;
-  --orange: #f2913a;
-  --grey: #a3ada9;
+  --bg: #0b120e;
+  --bg-glow: rgba(70, 120, 80, .16);
+  --bg-moss: rgba(40, 80, 55, .28);
+  --surface: rgba(19, 28, 23, .82);
+  --surface-solid: #131c17;
+  --surface-2: #18231d;
+  --border: #25332a;
+  --text: #e5ece6;
+  --muted: #9db0a4;
+  --faint: #6c7e72;
+  --green: #62c983;
+  --moss: #b2c75a;
+  --turq: #4cc8ba;
+  --orange: #ec8f5e;
+  --ochre: #d9b453;
+  --grey: #a5b0a8;
   --band-dark: #cfd6d3;
   --band-light: #2a312e;
-  --ring: #3cc9bb;
-  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
+  --ring: #4cc8ba;
+  --frond: #3b7550;
+  --frond-2: #285a3e;
+  --flora-opacity: .8;
+  --firefly: 1;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 30px -14px rgba(0,0,0,.75);
   color-scheme: dark;
 }
 
@@ -71,17 +99,23 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
-  background: var(--bg);
+  background:
+    radial-gradient(1100px 640px at 88% -12%, var(--bg-glow), transparent 62%),
+    radial-gradient(900px 720px at -12% 112%, var(--bg-moss), transparent 62%),
+    var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   font: 15px/1.5 "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 a { color: inherit; }
-.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 16px; }
 
 /* Chromosome-band stripe */
 .bands {
+  position: relative; z-index: 2;
   height: 10px;
   background: linear-gradient(90deg,
     var(--band-light) 0 4%, var(--band-dark) 4% 7%, var(--band-light) 7% 9%,
@@ -95,27 +129,77 @@ a { color: inherit; }
   opacity: .85;
 }
 
+/* ───────────── Flora (background ferns, drawn by script) ───────────── */
+.flora {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+  opacity: var(--flora-opacity);
+}
+.frond {
+  position: absolute; width: 0; height: 0;
+  transform: rotate(var(--rot));
+  animation: sway var(--dur, 11s) ease-in-out var(--delay, 0s) infinite alternate;
+  will-change: transform;
+}
+.frond svg {
+  position: absolute; left: 0; top: 0;
+  height: var(--h); width: auto; overflow: visible;
+  opacity: var(--o, .3);
+}
+.frond .blades { fill: var(--frond); }
+.frond.back .blades { fill: var(--frond-2); }
+.frond .stem { fill: none; stroke: var(--frond); stroke-linecap: round; }
+.frond.back .stem { stroke: var(--frond-2); }
+@keyframes sway {
+  from { transform: rotate(calc(var(--rot) - var(--amp, 1.4deg))); }
+  to   { transform: rotate(calc(var(--rot) + var(--amp, 1.4deg))); }
+}
+.crozier path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: unfurl 2.6s cubic-bezier(.3,.6,.2,1) .3s forwards; }
+@keyframes unfurl { to { stroke-dashoffset: 0; } }
+
+/* Fireflies — only lit in the dark theme */
+.firefly {
+  position: absolute; width: 4px; height: 4px; border-radius: 50%;
+  background: #eaf7a0;
+  box-shadow: 0 0 6px 2px rgba(220, 245, 120, .55), 0 0 16px 6px rgba(200, 240, 110, .18);
+  opacity: 0;
+  animation:
+    drift var(--d, 14s) ease-in-out var(--dl, 0s) infinite alternate,
+    glow var(--g, 4s) ease-in-out var(--dl, 0s) infinite;
+}
+@keyframes drift {
+  to { transform: translate(var(--dx, 40px), var(--dy, -30px)); }
+}
+@keyframes glow {
+  0%, 100% { opacity: 0; }
+  45%, 60% { opacity: calc(var(--firefly) * .9); }
+}
+
 /* ───────────── Header ───────────── */
-header { padding: 40px 0 24px; }
+header { padding: 44px 0 24px; }
 .top {
   display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
 }
 .eyebrow {
   font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace;
   letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
-  margin: 0 0 12px;
+  margin: 0 0 14px;
 }
 h1 {
-  font-weight: 800; font-size: clamp(32px, 6vw, 48px); line-height: 1.02;
-  letter-spacing: -.03em; margin: 0;
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "SOFT" 100, "opsz" 144;
+  font-weight: 600; font-size: clamp(44px, 8vw, 72px); line-height: .95;
+  letter-spacing: -.035em; margin: 0;
 }
+h1 em { font-style: italic; font-weight: 400; }
 h1 span { color: var(--green); }
-.sub { color: var(--muted); margin: 10px 0 0; max-width: 52ch; }
+.sub { color: var(--muted); margin: 14px 0 0; max-width: 52ch; font-size: 16px; }
 
 .icon-btn {
   flex: none;
-  width: 40px; height: 40px; border-radius: 10px;
+  width: 40px; height: 40px; border-radius: 12px;
   border: 1px solid var(--border); background: var(--surface);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   color: var(--muted); cursor: pointer;
   display: grid; place-items: center;
 }
@@ -126,40 +210,43 @@ h1 span { color: var(--green); }
 /* ───────────── Controls ───────────── */
 .controls {
   display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-  margin: 24px 0 8px;
+  margin: 28px 0 8px;
 }
 .search {
   position: relative; flex: 1 1 260px; min-width: 0;
 }
 .search input {
-  width: 100%; height: 44px;
-  padding: 0 44px 0 40px;
-  border-radius: 12px; border: 1px solid var(--border);
+  width: 100%; height: 46px;
+  padding: 0 44px 0 42px;
+  border-radius: 14px; border: 1px solid var(--border);
   background: var(--surface); color: var(--text);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   font: inherit; font-size: 15px;
 }
 .search input::placeholder { color: var(--faint); }
 .search input:focus { outline: 2px solid var(--ring); outline-offset: 1px; border-color: transparent; }
 .search svg {
-  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
-  width: 17px; height: 17px; color: var(--faint); pointer-events: none;
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width: 17px; height: 17px; color: var(--faint); pointer-events: none; z-index: 1;
 }
 .search kbd {
   position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
   font: 500 11px/1 "JetBrains Mono", monospace; color: var(--faint);
   border: 1px solid var(--border); border-radius: 6px; padding: 4px 6px;
-  background: var(--surface-2);
+  background: var(--surface-2); z-index: 1;
 }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {
-  height: 34px; padding: 0 12px; border-radius: 999px;
-  border: 1px solid var(--border); background: transparent; color: var(--muted);
+  height: 34px; padding: 0 13px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   font: 600 13px/1 "Manrope", sans-serif; cursor: pointer;
   display: inline-flex; align-items: center; gap: 7px;
 }
-.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--grey)); }
-.chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
-.chip[aria-pressed="true"] .dot { box-shadow: 0 0 0 2px var(--text); }
+.chip:hover { color: var(--text); }
+/* tiny leaf instead of a dot */
+.chip .dot { width: 9px; height: 9px; border-radius: 0 70% 0 70%; background: var(--c, var(--grey)); }
+.chip[aria-pressed="true"] { background: var(--text); color: var(--surface-solid); border-color: var(--text); }
 .chip:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 
 .status {
@@ -168,53 +255,69 @@ h1 span { color: var(--green); }
 }
 .status b { font-weight: 500; color: var(--muted); }
 
-/* ───────────── Grid & cards ───────────── */
+/* ───────────── Grid & cards (herbarium labels) ───────────── */
 .grid {
-  display: grid; gap: 14px;
+  display: grid; gap: 16px;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-  padding-bottom: 48px;
+  padding-bottom: 56px;
 }
 .card {
   --c: var(--grey);
   position: relative;
   background: var(--surface);
+  -webkit-backdrop-filter: blur(10px) saturate(1.1); backdrop-filter: blur(10px) saturate(1.1);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 18px 18px 14px;
   display: flex; flex-direction: column; gap: 12px;
   box-shadow: var(--shadow);
-  transition: transform .15s ease, border-color .15s ease;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  animation: sprout .5s ease-out both;
+  animation-delay: calc(var(--i, 0) * 40ms);
 }
+@keyframes sprout { from { opacity: 0; transform: translateY(8px); } }
 .card::before {
   content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px;
   border-radius: 0 3px 3px 0; background: var(--c); opacity: 0;
-  transition: opacity .15s ease;
+  transition: opacity .2s ease;
 }
-.card:hover { transform: translateY(-2px); border-color: var(--c); }
+.card:hover {
+  transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 55%, var(--border));
+  box-shadow: var(--shadow), 0 18px 34px -22px color-mix(in srgb, var(--c) 60%, transparent);
+}
 .card:hover::before, .card:focus-within::before { opacity: 1; }
 .card:focus-within { outline: 2px solid var(--ring); outline-offset: 2px; }
 
 .card-head { display: flex; gap: 14px; align-items: center; }
+/* leaf-shaped monogram */
 .mono {
-  flex: none; width: 46px; height: 46px; border-radius: 12px;
+  flex: none; width: 46px; height: 46px;
+  border-radius: 4px 60% 4px 60%;
   display: grid; place-items: center;
-  font: 800 16px/1 "Manrope", sans-serif; letter-spacing: -.02em;
+  font: 800 15px/1 "Manrope", sans-serif; letter-spacing: -.02em;
   color: var(--c);
   background: color-mix(in srgb, var(--c) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
+  transition: border-radius .35s ease;
 }
-.title { min-width: 0; }
+.card:hover .mono { border-radius: 60% 4px 60% 4px; }
+.title { min-width: 0; flex: 1; }
 .title h2 {
   margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -.01em;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .title .cat {
-  font: 500 11px/1 "JetBrains Mono", monospace; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--c); margin-top: 6px; display: block;
+  font: italic 400 14px/1 "Fraunces", Georgia, serif;
+  color: var(--c); margin-top: 5px; display: block;
+}
+.no {
+  align-self: flex-start; flex: none;
+  font: 400 11px/1 "JetBrains Mono", monospace; color: var(--faint);
+  letter-spacing: .04em;
 }
 /* whole card is clickable via this stretched link */
 .open { text-decoration: none; }
-.open::after { content: ""; position: absolute; inset: 0; border-radius: 16px; }
+.open::after { content: ""; position: absolute; inset: 0; border-radius: 18px; }
 .open:focus { outline: none; }
 
 .desc { margin: 0; color: var(--muted); font-size: 14px; flex: 1; }
@@ -229,7 +332,8 @@ h1 span { color: var(--green); }
   position: relative; z-index: 1; /* sits above the stretched link */
   flex: none; display: inline-flex; align-items: center; gap: 5px;
   text-decoration: none; color: var(--muted);
-  padding: 5px 8px; border-radius: 7px; border: 1px solid var(--border);
+  padding: 5px 9px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--surface-2);
 }
 .code:hover { color: var(--text); border-color: var(--muted); }
 .code:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
@@ -237,7 +341,8 @@ h1 span { color: var(--green); }
 
 .empty {
   grid-column: 1 / -1; text-align: center; padding: 48px 16px;
-  color: var(--muted); border: 1px dashed var(--border); border-radius: 16px;
+  color: var(--muted); border: 1px dashed var(--border); border-radius: 18px;
+  background: var(--surface);
 }
 
 footer {
@@ -248,11 +353,17 @@ footer {
 footer a { color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
-  .card, .card::before { transition: none; }
+  .card, .card::before, .mono { transition: none; animation: none; }
   .card:hover { transform: none; }
+  .frond { animation: none; }
+  .crozier path { animation: none; stroke-dashoffset: 0; }
+  .firefly { animation: none; opacity: calc(var(--firefly) * .5); }
+}
+@media (max-width: 720px) {
+  .flora { opacity: calc(var(--flora-opacity) * .7); }
 }
 @media (max-width: 520px) {
-  header { padding-top: 28px; }
+  header { padding-top: 30px; }
   .search kbd { display: none; }
   .search input { padding-right: 14px; }
 }
@@ -260,6 +371,7 @@ footer a { color: var(--muted); }
 </head>
 <body>
 <div class="bands" aria-hidden="true"></div>
+<div class="flora" id="flora" aria-hidden="true"></div>
 
 <div class="wrap">
   <header>
@@ -302,6 +414,7 @@ const GITHUB_USER = 'ClaireValtin';
 
 /* Nice names/descriptions for known tools. Each entry matches repo
    names by regex, so a rename (e.g. Ideograms → Idiograms) still works.
+   Leave out `desc` to use the repo's GitHub description.
    Any public repo with GitHub Pages that matches nothing here still gets
    a card, using its GitHub description. */
 const CATALOG = [
@@ -313,15 +426,18 @@ const CATALOG = [
     desc: 'Chromatogram viewer: traces, Phred scores, reverse-complement, select & BLAST.' },
   { match: /spectr|onco/i,          name: 'Spectres tumoraux',  cat: 'Oncogenetics',
     desc: 'Tumour spectra of cancer-predisposition syndromes — search by gene or by organ.' },
+  { match: /^lmc$/i,                name: 'LMC',                cat: 'Calculators' },
+  { match: /culture.?oh/i,          name: 'Culture OH',         cat: 'Calculators' },
   { match: /inventor|stock/i,       name: 'Lab inventory',      cat: 'Lab',
     desc: 'Consumption and restocking of lab products.' },
   { match: /ledger|expense|budget/i, name: 'Ledger',            cat: 'Personal',
     desc: 'Expenses and savings tracker.' },
 ];
 
-/* Repos to never show (exact repo names, case-insensitive). */
+/* Repos to never show (exact repo names, case-insensitive).
+   The repo hosting this page is also hidden automatically. */
 const HIDE = [
-  // 'Ledger',
+  'Tools',
 ];
 
 /* Sites that are NOT GitHub Pages repos (e.g. later, on your home server).
@@ -331,15 +447,18 @@ const MANUAL = [
 
 /* Shown only if GitHub can't be reached AND nothing is cached yet. */
 const FALLBACK = [
-  { repo: 'Ideograms', url: 'https://clairevaltin.github.io/Ideograms/',
-    code: 'https://github.com/ClaireValtin/Ideograms' },
+  { repo: 'Idiograms', url: 'https://clairevaltin.github.io/Idiograms/',
+    code: 'https://github.com/ClaireValtin/Idiograms' },
+  { repo: 'SangerScope', url: 'https://clairevaltin.github.io/SangerScope/',
+    code: 'https://github.com/ClaireValtin/SangerScope' },
 ];
 
 const CATEGORY_COLORS = {
   Cytogenetics: 'var(--green)',
   Sequencing:   'var(--turq)',
   Oncogenetics: 'var(--orange)',
-  Lab:          'var(--green)',
+  Calculators:  'var(--ochre)',
+  Lab:          'var(--moss)',
   Personal:     'var(--grey)',
   Other:        'var(--grey)',
 };
@@ -351,6 +470,10 @@ const user = GITHUB_USER.toLowerCase();
 const $ = (id) => document.getElementById(id);
 const grid = $('grid'), statusEl = $('status'), q = $('q'), chipsEl = $('chips');
 $('ghLink').href = `https://github.com/${GITHUB_USER}?tab=repositories`;
+
+/* On <user>.github.io/<Repo>/, <Repo> is this launcher itself. */
+const SELF_REPO = location.hostname.endsWith('.github.io')
+  ? decodeURIComponent(location.pathname.split('/')[1] || '') : '';
 
 let tools = [];
 let activeCat = 'All';
@@ -376,9 +499,134 @@ function load(key) {
   });
 })();
 
+/* ---------- flora: procedurally drawn ferns (fougères) ---------- */
+(function flora() {
+  const root = $('flora');
+  const f = (n) => Math.round(n * 10) / 10;
+  function rng(seed) {                                    // mulberry32
+    return () => {
+      seed = (seed + 0x6D2B79F5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function box() {
+    const b = { x0: 0, y0: 0, x1: 0, y1: 0 };
+    b.add = (x, y) => { b.x0 = Math.min(b.x0, x); b.y0 = Math.min(b.y0, y);
+                        b.x1 = Math.max(b.x1, x); b.y1 = Math.max(b.y1, y); };
+    return b;
+  }
+  function leaf(b, x, y, a, l, w) {
+    const c = Math.cos(a), s = Math.sin(a);
+    const mx = x + c * l * .5, my = y + s * l * .5, px = -s * w, py = c * w;
+    const tx = x + c * l, ty = y + s * l;
+    b.add(tx, ty);
+    return `M${f(x)} ${f(y)}Q${f(mx + px)} ${f(my + py)} ${f(tx)} ${f(ty)}Q${f(mx - px)} ${f(my - py)} ${f(x)} ${f(y)}Z`;
+  }
+
+  /* A bipinnate frond growing up from (0,0): rachis → pinnae → pinnules. */
+  function frond(o) {
+    const R = rng(o.seed), b = box(), steps = 180, pts = [];
+    let x = 0, y = 0;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps, th = -Math.PI / 2 + o.bend * (.35 * t + .9 * t * t * t);
+      pts.push({ x, y, th }); b.add(x, y);
+      x += Math.cos(th) * o.length / steps; y += Math.sin(th) * o.length / steps;
+    }
+    const at = (t) => pts[Math.min(steps, Math.max(0, Math.round(t * steps)))];
+    const stem = 'M' + pts.map((p) => `${f(p.x)} ${f(p.y)}`).join('L');
+    let blades = '', ribs = '';
+    const n = o.pairs, t0 = o.stipe;
+    for (let i = 0; i < n; i++) {
+      for (const side of [-1, 1]) {
+        const u = (i + (side > 0 ? .5 : 0)) / n;           // alternate pinnae
+        const t = t0 + (1 - t0) * u * .985, p = at(t);
+        const shape = Math.pow(1 - u, .9) * (.6 + .4 * Math.sin(Math.min(u / .28, 1) * Math.PI / 2));
+        const Lp = o.pinna * shape * (.9 + R() * .2);
+        if (Lp < 3) continue;
+        let a = p.th + side * (o.spread - u * .3 + (R() - .5) * .08);
+        const k = Math.max(2, Math.round(Lp / o.lobe)), step = Lp / k;
+        let px = p.x, py = p.y, rib = `M${f(px)} ${f(py)}`;
+        for (let j = 0; j < k; j++) {
+          const s = (j + .5) / k, pl = Lp * o.lobeRatio * (1 - .65 * s) + 1.5;
+          const qx = px + Math.cos(a) * step * .5, qy = py + Math.sin(a) * step * .5;
+          blades += leaf(b, qx, qy, a - .9, pl, pl * .8) + leaf(b, qx, qy, a + .9, pl, pl * .8);
+          px += Math.cos(a) * step; py += Math.sin(a) * step;
+          a -= side * o.curl;                              // pinnae curve toward the tip
+          rib += `L${f(px)} ${f(py)}`;
+        }
+        blades += leaf(b, px, py, a, Lp * o.lobeRatio * .7 + 2, Lp * o.lobeRatio * .5 + 1);
+        ribs += rib;
+      }
+    }
+    const tip = pts[steps];
+    blades += leaf(b, tip.x, tip.y, tip.th, o.pinna * .12 + 4, o.pinna * .07 + 2);
+    return { b, svg: `<path class="stem" stroke-width="${o.stemW}" d="${stem}"/>` +
+      `<path class="stem" stroke-width="${o.stemW * .35}" d="${ribs}"/>` +
+      `<path class="blades" d="${blades}"/>` };
+  }
+
+  /* A fiddlehead (crosse): a stem that rolls into a logarithmic spiral. */
+  function crozier(o) {
+    const b = box(), r0 = o.r, cx = -r0, cy = -o.stemH;
+    let d = `M0 0Q${f(o.lean)} ${f(-o.stemH * .5)} 0 ${f(cy)}`, leaves = '';
+    b.add(0, 0); b.add(o.lean, -o.stemH * .5);
+    for (let th = 0; th <= Math.PI * 4.2; th += .08) {
+      const r = r0 * Math.exp(-.17 * th), x = cx + r * Math.cos(-th), y = cy + r * Math.sin(-th);
+      d += `L${f(x)} ${f(y)}`; b.add(x, y);
+    }
+    for (let th = .25; th < Math.PI * 3; th += .32) {
+      const r = r0 * Math.exp(-.17 * th), x = cx + r * Math.cos(-th), y = cy + r * Math.sin(-th);
+      const sc = Math.exp(-.17 * th);
+      leaves += leaf(b, x, y, -th, o.r * .42 * sc, o.r * .3 * sc);
+    }
+    return { b, svg: `<g class="crozier"><path class="stem" pathLength="1" stroke-width="${o.stemW}" d="${d}"/></g>` +
+      `<path class="blades" d="${leaves}"/>` };
+  }
+
+  function place(shape, css, cls) {
+    const { b, svg } = shape, pad = 6;
+    const x0 = b.x0 - pad, y0 = b.y0 - pad, w = b.x1 - b.x0 + 2 * pad, h = b.y1 - b.y0 + 2 * pad;
+    const el = document.createElement('div');
+    el.className = 'frond' + (cls ? ' ' + cls : '');
+    el.style.cssText = css;
+    // translate so the frond's base (0,0) sits on the wrapper's origin
+    el.innerHTML = `<svg viewBox="${f(x0)} ${f(y0)} ${f(w)} ${f(h)}" style="aspect-ratio:${f(w)}/${f(h)};` +
+      `transform:translate(${f(x0 / w * 100)}%, ${f(y0 / h * 100)}%)">${svg}</svg>`;
+    root.appendChild(el);
+  }
+
+  const fern = (seed, bend, extra) => frond(Object.assign({
+    seed, bend, length: 1000, pairs: 27, stipe: .14, pinna: 290, spread: 1.1,
+    lobe: 15, lobeRatio: .11, curl: .03, stemW: 7 }, extra));
+
+  place(fern(11, -.35, { pinna: 260 }),
+        'left:14vw; top:106vh; --rot:-6deg; --h:min(62vh,680px); --o:.55; --dur:13s; --delay:-4s', 'back');
+  place(fern(7, .55),
+        'left:-2vw; top:103vh; --rot:20deg; --h:min(88vh,980px); --o:.34; --dur:11s');
+  place(fern(23, .5, { pairs: 22, pinna: 280 }),
+        'left:103vw; top:-3vh; --rot:208deg; --h:min(64vh,720px); --o:.26; --dur:12s; --delay:-6s');
+  place(fern(5, -.6, { pairs: 18, pinna: 260 }),
+        'left:99vw; top:104vh; --rot:-32deg; --h:min(46vh,520px); --o:.28; --dur:10s; --delay:-2s');
+  place(crozier({ r: 46, stemH: 170, lean: 26, stemW: 6 }),
+        'left:88vw; top:101vh; --rot:-4deg; --h:min(22vh,220px); --o:.4; --dur:9s; --amp:2.5deg');
+
+  /* fireflies (visible only in dark theme) */
+  const R = rng(42);
+  for (let i = 0; i < 16; i++) {
+    const s = document.createElement('i');
+    s.className = 'firefly';
+    s.style.cssText = `left:${f(R() * 100)}vw; top:${f(30 + R() * 70)}vh;` +
+      `--dx:${f((R() - .5) * 140)}px; --dy:${f((R() - .5) * 110)}px;` +
+      `--d:${f(10 + R() * 12)}s; --g:${f(3 + R() * 4)}s; --dl:${f(-R() * 10)}s`;
+    root.appendChild(s);
+  }
+})();
+
 /* ---------- data shaping ---------- */
 function prettify(repoName) {
-  return repoName.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  return repoName.replace(/[-_]+/g, ' ').trim().replace(/\b\w/g, (c) => c.toUpperCase());
 }
 function initials(name) {
   const words = name.replace(/[^A-Za-zÀ-ÿ0-9 ]/g, ' ').trim().split(/\s+/);
@@ -402,7 +650,7 @@ function toTool(r) {
   };
 }
 function fromApi(list) {
-  const hide = new Set(HIDE.map((h) => h.toLowerCase()));
+  const hide = new Set(HIDE.concat(SELF_REPO).map((h) => h.toLowerCase()));
   return list
     .filter((r) => !r.fork && !r.archived)
     .filter((r) => r.name.toLowerCase() !== `${user}.github.io`)
@@ -418,13 +666,16 @@ function fromApi(list) {
     }));
 }
 function setTools(slim) {
+  const hide = new Set(HIDE.concat(SELF_REPO).map((h) => h.toLowerCase()));
   const manual = MANUAL.map((m) => ({
     name: m.name, desc: m.desc || '', cat: m.cat || 'Other', url: m.url,
     code: m.code || null, pushed: null, mono: initials(m.name),
   }));
   const catOrder = Object.keys(CATEGORY_COLORS);
-  tools = slim.map(toTool).concat(manual).sort((a, b) =>
-    (catOrder.indexOf(a.cat) - catOrder.indexOf(b.cat)) || a.name.localeCompare(b.name));
+  tools = slim.filter((r) => !hide.has(String(r.repo).toLowerCase()))   // also cleans old caches
+    .map(toTool).concat(manual).sort((a, b) =>
+      (catOrder.indexOf(a.cat) - catOrder.indexOf(b.cat)) || a.name.localeCompare(b.name));
+  tools.forEach((t, i) => { t.no = String(i + 1).padStart(2, '0'); });
   renderChips();
   render();
 }
@@ -455,14 +706,15 @@ function render() {
     grid.innerHTML = `<div class="empty">${tools.length ? 'No tool matches that search.' : 'No tools found yet.'}</div>`;
     return;
   }
-  grid.innerHTML = list.map((t) => `
-    <article class="card" style="--c:${CATEGORY_COLORS[t.cat] || 'var(--grey)'}">
+  grid.innerHTML = list.map((t, i) => `
+    <article class="card" style="--c:${CATEGORY_COLORS[t.cat] || 'var(--grey)'}; --i:${i}">
       <div class="card-head">
         <div class="mono" aria-hidden="true">${esc(t.mono)}</div>
         <div class="title">
           <h2><a class="open" href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></h2>
           <span class="cat">${esc(t.cat)}</span>
         </div>
+        <span class="no" aria-hidden="true">№ ${t.no}</span>
       </div>
       <p class="desc">${esc(t.desc)}</p>
       <div class="card-foot">
