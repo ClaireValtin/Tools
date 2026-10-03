@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tools · Soufiyan Rehioui</title>
+<meta name="description" content="One-click launcher for my genetics and lab web tools.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ───────────── Theme ───────────── */
+:root {
+  --bg: #f0f2f1;
+  --surface: #ffffff;
+  --surface-2: #f6f8f7;
+  --border: #dde3e0;
+  --text: #121614;
+  --muted: #5f6b66;
+  --faint: #8a9590;
+  --green: #0f7a4f;
+  --turq: #128a80;
+  --orange: #c4620c;
+  --grey: #5b6461;
+  --band-dark: #2a302d;
+  --band-light: #d9dedb;
+  --ring: #128a80;
+  --shadow: 0 1px 2px rgba(18,22,20,.06), 0 8px 24px -12px rgba(18,22,20,.18);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1211;
+    --surface: #171c1a;
+    --surface-2: #1c2220;
+    --border: #29312e;
+    --text: #e7ecea;
+    --muted: #9aa6a1;
+    --faint: #6d7873;
+    --green: #35c27b;
+    --turq: #3cc9bb;
+    --orange: #f2913a;
+    --grey: #a3ada9;
+    --band-dark: #cfd6d3;
+    --band-light: #2a312e;
+    --ring: #3cc9bb;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1211;
+  --surface: #171c1a;
+  --surface-2: #1c2220;
+  --border: #29312e;
+  --text: #e7ecea;
+  --muted: #9aa6a1;
+  --faint: #6d7873;
+  --green: #35c27b;
+  --turq: #3cc9bb;
+  --orange: #f2913a;
+  --grey: #a3ada9;
+  --band-dark: #cfd6d3;
+  --band-light: #2a312e;
+  --ring: #3cc9bb;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.7);
+  color-scheme: dark;
+}
+
+/* ───────────── Base ───────────── */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+a { color: inherit; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+/* Chromosome-band stripe */
+.bands {
+  height: 10px;
+  background: linear-gradient(90deg,
+    var(--band-light) 0 4%, var(--band-dark) 4% 7%, var(--band-light) 7% 9%,
+    var(--band-dark) 9% 15%, var(--band-light) 15% 21%, var(--band-dark) 21% 23%,
+    var(--band-light) 23% 30%, var(--band-dark) 30% 36%, var(--band-light) 36% 38%,
+    var(--orange) 38% 40%, var(--band-light) 40% 44%, var(--band-dark) 44% 46%,
+    var(--band-light) 46% 53%, var(--band-dark) 53% 60%, var(--band-light) 60% 62%,
+    var(--band-dark) 62% 64%, var(--band-light) 64% 71%, var(--band-dark) 71% 76%,
+    var(--band-light) 76% 80%, var(--band-dark) 80% 82%, var(--band-light) 82% 88%,
+    var(--band-dark) 88% 93%, var(--band-light) 93% 100%);
+  opacity: .85;
+}
+
+/* ───────────── Header ───────────── */
+header { padding: 40px 0 24px; }
+.top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+}
+.eyebrow {
+  font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+  margin: 0 0 12px;
+}
+h1 {
+  font-weight: 800; font-size: clamp(32px, 6vw, 48px); line-height: 1.02;
+  letter-spacing: -.03em; margin: 0;
+}
+h1 span { color: var(--green); }
+.sub { color: var(--muted); margin: 10px 0 0; max-width: 52ch; }
+
+.icon-btn {
+  flex: none;
+  width: 40px; height: 40px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--muted); cursor: pointer;
+  display: grid; place-items: center;
+}
+.icon-btn:hover { color: var(--text); }
+.icon-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.icon-btn svg { width: 18px; height: 18px; }
+
+/* ───────────── Controls ───────────── */
+.controls {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  margin: 24px 0 8px;
+}
+.search {
+  position: relative; flex: 1 1 260px; min-width: 0;
+}
+.search input {
+  width: 100%; height: 44px;
+  padding: 0 44px 0 40px;
+  border-radius: 12px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text);
+  font: inherit; font-size: 15px;
+}
+.search input::placeholder { color: var(--faint); }
+.search input:focus { outline: 2px solid var(--ring); outline-offset: 1px; border-color: transparent; }
+.search svg {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  width: 17px; height: 17px; color: var(--faint); pointer-events: none;
+}
+.search kbd {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  font: 500 11px/1 "JetBrains Mono", monospace; color: var(--faint);
+  border: 1px solid var(--border); border-radius: 6px; padding: 4px 6px;
+  background: var(--surface-2);
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  height: 34px; padding: 0 12px; border-radius: 999px;
+  border: 1px solid var(--border); background: transparent; color: var(--muted);
+  font: 600 13px/1 "Manrope", sans-serif; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--grey)); }
+.chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.chip[aria-pressed="true"] .dot { box-shadow: 0 0 0 2px var(--text); }
+.chip:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+.status {
+  font: 400 12px/1.4 "JetBrains Mono", monospace; color: var(--faint);
+  margin: 6px 0 18px; min-height: 17px;
+}
+.status b { font-weight: 500; color: var(--muted); }
+
+/* ───────────── Grid & cards ───────────── */
+.grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  padding-bottom: 48px;
+}
+.card {
+  --c: var(--grey);
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 18px 14px;
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: var(--shadow);
+  transition: transform .15s ease, border-color .15s ease;
+}
+.card::before {
+  content: ""; position: absolute; left: 0; top: 18px; bottom: 18px; width: 3px;
+  border-radius: 0 3px 3px 0; background: var(--c); opacity: 0;
+  transition: opacity .15s ease;
+}
+.card:hover { transform: translateY(-2px); border-color: var(--c); }
+.card:hover::before, .card:focus-within::before { opacity: 1; }
+.card:focus-within { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+.card-head { display: flex; gap: 14px; align-items: center; }
+.mono {
+  flex: none; width: 46px; height: 46px; border-radius: 12px;
+  display: grid; place-items: center;
+  font: 800 16px/1 "Manrope", sans-serif; letter-spacing: -.02em;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+}
+.title { min-width: 0; }
+.title h2 {
+  margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -.01em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.title .cat {
+  font: 500 11px/1 "JetBrains Mono", monospace; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--c); margin-top: 6px; display: block;
+}
+/* whole card is clickable via this stretched link */
+.open { text-decoration: none; }
+.open::after { content: ""; position: absolute; inset: 0; border-radius: 16px; }
+.open:focus { outline: none; }
+
+.desc { margin: 0; color: var(--muted); font-size: 14px; flex: 1; }
+
+.card-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding-top: 12px; border-top: 1px dashed var(--border);
+  font: 400 12px/1.2 "JetBrains Mono", monospace; color: var(--faint);
+}
+.card-foot .path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.code {
+  position: relative; z-index: 1; /* sits above the stretched link */
+  flex: none; display: inline-flex; align-items: center; gap: 5px;
+  text-decoration: none; color: var(--muted);
+  padding: 5px 8px; border-radius: 7px; border: 1px solid var(--border);
+}
+.code:hover { color: var(--text); border-color: var(--muted); }
+.code:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.code svg { width: 13px; height: 13px; }
+
+.empty {
+  grid-column: 1 / -1; text-align: center; padding: 48px 16px;
+  color: var(--muted); border: 1px dashed var(--border); border-radius: 16px;
+}
+
+footer {
+  border-top: 1px solid var(--border); padding: 18px 0 28px;
+  font: 400 12px/1.5 "JetBrains Mono", monospace; color: var(--faint);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+}
+footer a { color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .card::before { transition: none; }
+  .card:hover { transform: none; }
+}
+@media (max-width: 520px) {
+  header { padding-top: 28px; }
+  .search kbd { display: none; }
+  .search input { padding-right: 14px; }
+}
+</style>
+</head>
+<body>
+<div class="bands" aria-hidden="true"></div>
+
+<div class="wrap">
+  <header>
+    <div class="top">
+      <div>
+        <p class="eyebrow">Soufiyan Rehioui · Medical genetics</p>
+        <h1>Tools<span>.</span></h1>
+        <p class="sub">Everything I've built, one click away.</p>
+      </div>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+      </button>
+    </div>
+
+    <div class="controls">
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search tools…" autocomplete="off" aria-label="Search tools">
+        <kbd>/</kbd>
+      </label>
+      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </header>
+
+  <main class="grid" id="grid" aria-label="Tools"></main>
+
+  <footer>
+    <span>Cards open the live site. "Code" opens the repository.</span>
+    <a id="ghLink" href="#" target="_blank" rel="noopener">All repositories →</a>
+  </footer>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   SETTINGS — the only part you normally need to edit
+   ═══════════════════════════════════════════════════════════════ */
+
+const GITHUB_USER = 'ClaireValtin';
+
+/* Nice names/descriptions for known tools. Each entry matches repo
+   names by regex, so a rename (e.g. Ideograms → Idiograms) still works.
+   Any public repo with GitHub Pages that matches nothing here still gets
+   a card, using its GitHub description. */
+const CATALOG = [
+  { match: /id[ei]ogram/i,          name: 'Idiograms',          cat: 'Cytogenetics',
+    desc: 'R/G-band idiograms (400–700), RHG microscope simulator and ISCN abnormality builder.' },
+  { match: /sanger/i,               name: 'SangerScope',        cat: 'Sequencing',
+    desc: 'Align AB1/FASTA reads to the MANE reference, call and annotate variants, export per patient.' },
+  { match: /ab1|chromat|electroph/i, name: 'AB1 Viewer',        cat: 'Sequencing',
+    desc: 'Chromatogram viewer: traces, Phred scores, reverse-complement, select & BLAST.' },
+  { match: /spectr|onco/i,          name: 'Spectres tumoraux',  cat: 'Oncogenetics',
+    desc: 'Tumour spectra of cancer-predisposition syndromes — search by gene or by organ.' },
+  { match: /inventor|stock/i,       name: 'Lab inventory',      cat: 'Lab',
+    desc: 'Consumption and restocking of lab products.' },
+  { match: /ledger|expense|budget/i, name: 'Ledger',            cat: 'Personal',
+    desc: 'Expenses and savings tracker.' },
+];
+
+/* Repos to never show (exact repo names, case-insensitive). */
+const HIDE = [
+  // 'Ledger',
+];
+
+/* Sites that are NOT GitHub Pages repos (e.g. later, on your home server).
+   Example: { name: 'Inventory (home)', url: 'https://…', cat: 'Lab', desc: '…' } */
+const MANUAL = [
+];
+
+/* Shown only if GitHub can't be reached AND nothing is cached yet. */
+const FALLBACK = [
+  { repo: 'Ideograms', url: 'https://clairevaltin.github.io/Ideograms/',
+    code: 'https://github.com/ClaireValtin/Ideograms' },
+];
+
+const CATEGORY_COLORS = {
+  Cytogenetics: 'var(--green)',
+  Sequencing:   'var(--turq)',
+  Oncogenetics: 'var(--orange)',
+  Lab:          'var(--green)',
+  Personal:     'var(--grey)',
+  Other:        'var(--grey)',
+};
+
+/* ═══════════════════════════════════════════════════════════════ */
+
+const CACHE_KEY = 'tools-launcher:repos:v1';
+const user = GITHUB_USER.toLowerCase();
+const $ = (id) => document.getElementById(id);
+const grid = $('grid'), statusEl = $('status'), q = $('q'), chipsEl = $('chips');
+$('ghLink').href = `https://github.com/${GITHUB_USER}?tab=repositories`;
+
+let tools = [];
+let activeCat = 'All';
+
+/* ---------- storage (always guarded) ---------- */
+function store(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch (_) {}
+}
+function load(key) {
+  try { return JSON.parse(localStorage.getItem(key)); } catch (_) { return null; }
+}
+
+/* ---------- theme ---------- */
+(function initTheme() {
+  const saved = load('tools-launcher:theme');
+  if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+  $('themeBtn').addEventListener('click', () => {
+    const cur = document.documentElement.dataset.theme ||
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    store('tools-launcher:theme', next);
+  });
+})();
+
+/* ---------- data shaping ---------- */
+function prettify(repoName) {
+  return repoName.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+function initials(name) {
+  const words = name.replace(/[^A-Za-zÀ-ÿ0-9 ]/g, ' ').trim().split(/\s+/);
+  if (words.length > 1) return (words[0][0] + words[1][0]).toUpperCase();
+  const w = words[0] || '?';
+  const caps = w.match(/[A-Z]/g);          // SangerScope → SS
+  if (caps && caps.length >= 2) return caps[0] + caps[1];
+  return w.slice(0, 2).toUpperCase();
+}
+function toTool(r) {
+  const meta = CATALOG.find((c) => c.match.test(r.repo)) || {};
+  const name = meta.name || prettify(r.repo);
+  return {
+    name,
+    desc: meta.desc || r.desc || 'No description yet.',
+    cat: meta.cat || 'Other',
+    url: r.url,
+    code: r.code || null,
+    pushed: r.pushed || null,
+    mono: initials(name),
+  };
+}
+function fromApi(list) {
+  const hide = new Set(HIDE.map((h) => h.toLowerCase()));
+  return list
+    .filter((r) => !r.fork && !r.archived)
+    .filter((r) => r.name.toLowerCase() !== `${user}.github.io`)
+    .filter((r) => !hide.has(r.name.toLowerCase()))
+    .filter((r) => r.has_pages || (r.homepage && /^https?:\/\//.test(r.homepage)))
+    .map((r) => ({
+      repo: r.name,
+      desc: r.description,
+      url: (r.homepage && /^https?:\/\//.test(r.homepage)) ? r.homepage
+           : `https://${user}.github.io/${r.name}/`,
+      code: r.html_url,
+      pushed: r.pushed_at,
+    }));
+}
+function setTools(slim) {
+  const manual = MANUAL.map((m) => ({
+    name: m.name, desc: m.desc || '', cat: m.cat || 'Other', url: m.url,
+    code: m.code || null, pushed: null, mono: initials(m.name),
+  }));
+  const catOrder = Object.keys(CATEGORY_COLORS);
+  tools = slim.map(toTool).concat(manual).sort((a, b) =>
+    (catOrder.indexOf(a.cat) - catOrder.indexOf(b.cat)) || a.name.localeCompare(b.name));
+  renderChips();
+  render();
+}
+
+/* ---------- rendering ---------- */
+function ago(iso) {
+  if (!iso) return '';
+  const s = (Date.now() - new Date(iso)) / 1000;
+  const units = [[31536000, 'y'], [2592000, 'mo'], [604800, 'w'], [86400, 'd'], [3600, 'h'], [60, 'min']];
+  for (const [sec, u] of units) if (s >= sec) return `updated ${Math.floor(s / sec)}${u} ago`;
+  return 'updated just now';
+}
+function shortUrl(u) {
+  try { const x = new URL(u); return (x.host + x.pathname).replace(/\/$/, ''); } catch (_) { return u; }
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function visible() {
+  const term = q.value.trim().toLowerCase();
+  return tools.filter((t) =>
+    (activeCat === 'All' || t.cat === activeCat) &&
+    (!term || (t.name + ' ' + t.desc + ' ' + t.cat + ' ' + t.url).toLowerCase().includes(term)));
+}
+function render() {
+  const list = visible();
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty">${tools.length ? 'No tool matches that search.' : 'No tools found yet.'}</div>`;
+    return;
+  }
+  grid.innerHTML = list.map((t) => `
+    <article class="card" style="--c:${CATEGORY_COLORS[t.cat] || 'var(--grey)'}">
+      <div class="card-head">
+        <div class="mono" aria-hidden="true">${esc(t.mono)}</div>
+        <div class="title">
+          <h2><a class="open" href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></h2>
+          <span class="cat">${esc(t.cat)}</span>
+        </div>
+      </div>
+      <p class="desc">${esc(t.desc)}</p>
+      <div class="card-foot">
+        <span class="path" title="${esc(t.url)}">${t.pushed ? ago(t.pushed) : esc(shortUrl(t.url))}</span>
+        ${t.code ? `<a class="code" href="${esc(t.code)}" target="_blank" rel="noopener" aria-label="Source code of ${esc(t.name)}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>Code</a>` : ''}
+      </div>
+    </article>`).join('');
+}
+function renderChips() {
+  const cats = ['All', ...new Set(tools.map((t) => t.cat))];
+  if (!cats.includes(activeCat)) activeCat = 'All';
+  chipsEl.hidden = cats.length <= 2;
+  chipsEl.innerHTML = cats.map((c) => `
+    <button class="chip" type="button" data-cat="${esc(c)}" aria-pressed="${c === activeCat}"
+      style="--c:${c === 'All' ? 'var(--muted)' : (CATEGORY_COLORS[c] || 'var(--grey)')}">
+      ${c === 'All' ? '' : '<span class="dot"></span>'}${esc(c)}</button>`).join('');
+}
+function setStatus(html) { statusEl.innerHTML = html; }
+
+/* ---------- events ---------- */
+chipsEl.addEventListener('click', (e) => {
+  const b = e.target.closest('.chip'); if (!b) return;
+  activeCat = b.dataset.cat; renderChips(); render();
+});
+q.addEventListener('input', render);
+q.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {                       // Enter opens the first match
+    const first = visible()[0];
+    if (first) window.open(first.url, '_blank', 'noopener');
+  } else if (e.key === 'Escape') { q.value = ''; render(); q.blur(); }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement !== q && !e.ctrlKey && !e.metaKey) {
+    e.preventDefault(); q.focus();
+  }
+});
+
+/* ---------- boot: cached list first, then refresh from GitHub ---------- */
+(async function boot() {
+  const cached = load(CACHE_KEY);
+  if (cached && Array.isArray(cached.repos)) {
+    setTools(cached.repos);
+    setStatus(`<b>${tools.length}</b> tools · syncing with GitHub…`);
+  } else {
+    setStatus('Loading from GitHub…');
+  }
+  try {
+    const res = await fetch(`https://api.github.com/users/${encodeURIComponent(GITHUB_USER)}/repos?per_page=100&sort=pushed`,
+      { headers: { Accept: 'application/vnd.github+json' } });
+    if (!res.ok) throw new Error(res.status === 403 ? 'GitHub rate limit reached' : `GitHub error ${res.status}`);
+    const slim = fromApi(await res.json());
+    store(CACHE_KEY, { t: Date.now(), repos: slim });
+    setTools(slim);
+    setStatus(`<b>${tools.length}</b> tools · synced with GitHub just now`);
+  } catch (err) {
+    if (cached && Array.isArray(cached.repos)) {
+      setStatus(`<b>${tools.length}</b> tools · ${esc(err.message)} — showing list from ${new Date(cached.t).toLocaleDateString()}`);
+    } else {
+      setTools(FALLBACK);
+      setStatus(`${esc(err.message || 'Offline')} — showing the built-in list only`);
+    }
+  }
+})();
+</script>
+</body>
+</html>
