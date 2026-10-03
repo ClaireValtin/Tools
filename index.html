@@ -27,6 +27,7 @@
   --turq: #1d7f77;
   --orange: #b4572a;
   --ochre: #9a7417;
+  --berry: #8d3f6e;
   --grey: #68716b;
   --band-dark: #2a302d;
   --band-light: #d9dedb;
@@ -55,6 +56,7 @@
     --turq: #4cc8ba;
     --orange: #ec8f5e;
     --ochre: #d9b453;
+  --berry: #db86b8;
     --grey: #a5b0a8;
     --band-dark: #cfd6d3;
     --band-light: #2a312e;
@@ -83,6 +85,7 @@
   --turq: #4cc8ba;
   --orange: #ec8f5e;
   --ochre: #d9b453;
+  --berry: #db86b8;
   --grey: #a5b0a8;
   --band-dark: #cfd6d3;
   --band-light: #2a312e;
@@ -420,8 +423,12 @@ const GITHUB_USER = 'ClaireValtin';
 const CATALOG = [
   { match: /id[ei]ogram/i,          name: 'Idiograms',          cat: 'Cytogenetics',
     desc: 'R/G-band idiograms (400–700), RHG microscope simulator and ISCN abnormality builder.' },
+  { match: /globin/i,               name: 'GlobinConsole',      cat: 'Molecular biology' },
+  { match: /hcs.?atlas/i,           name: 'HCSAtlas',           cat: 'Molecular biology' },
+  { match: /acmg/i,                 name: 'Atelier ACMG',       cat: 'Molecular biology' },
   { match: /sanger/i,               name: 'SangerScope',        cat: 'Sequencing',
     desc: 'Align AB1/FASTA reads to the MANE reference, call and annotate variants, export per patient.' },
+  { match: /fennec/i,               name: 'FennecTrace',        cat: 'Sequencing' },
   { match: /ab1|chromat|electroph/i, name: 'AB1 Viewer',        cat: 'Sequencing',
     desc: 'Chromatogram viewer: traces, Phred scores, reverse-complement, select & BLAST.' },
   { match: /spectr|onco/i,          name: 'Spectres tumoraux',  cat: 'Oncogenetics',
@@ -455,6 +462,7 @@ const FALLBACK = [
 
 const CATEGORY_COLORS = {
   Cytogenetics: 'var(--green)',
+  'Molecular biology': 'var(--berry)',
   Sequencing:   'var(--turq)',
   Oncogenetics: 'var(--orange)',
   Calculators:  'var(--ochre)',
