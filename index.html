@@ -415,6 +415,15 @@ footer a { color: var(--muted); }
 
 const GITHUB_USER = 'ClaireValtin';
 
+/* CATEGORIES WITHOUT EDITING THIS FILE — use GitHub topics.
+   On a repo's page: About ⚙ → Topics, then add one of:
+     • a category's name as a topic: cytogenetics, molecular-biology,
+       sequencing, oncogenetics, calculators, lab, personal
+     • category-<name> to start a new one, e.g. category-hematology
+       (it shows in grey until you give it a colour in CATEGORY_COLORS)
+     • hide-from-tools to keep a repo off this page
+   A topic beats the `cat` written below. */
+
 /* Nice names/descriptions for known tools. Each entry matches repo
    names by regex, so a rename (e.g. Ideograms → Idiograms) still works.
    Leave out `desc` to use the repo's GitHub description.
@@ -644,13 +653,24 @@ function initials(name) {
   if (caps && caps.length >= 2) return caps[0] + caps[1];
   return w.slice(0, 2).toUpperCase();
 }
+const slug = (s) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+function topicCat(topics) {                     // see "CATEGORIES WITHOUT EDITING" above
+  for (const t of topics || []) {
+    const key = t.replace(/^category-/, '');
+    const known = Object.keys(CATEGORY_COLORS).find((c) => c !== 'Other' && slug(c) === key);
+    if (known) return known;
+    if (key !== t && key) return key.replace(/-+/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+  }
+  return null;
+}
 function toTool(r) {
   const meta = CATALOG.find((c) => c.match.test(r.repo)) || {};
   const name = meta.name || prettify(r.repo);
   return {
     name,
     desc: meta.desc || r.desc || 'No description yet.',
-    cat: meta.cat || 'Other',
+    cat: topicCat(r.topics) || meta.cat || 'Other',
     url: r.url,
     code: r.code || null,
     pushed: r.pushed || null,
@@ -663,6 +683,7 @@ function fromApi(list) {
     .filter((r) => !r.fork && !r.archived)
     .filter((r) => r.name.toLowerCase() !== `${user}.github.io`)
     .filter((r) => !hide.has(r.name.toLowerCase()))
+    .filter((r) => !(r.topics || []).includes('hide-from-tools'))
     .filter((r) => r.has_pages || (r.homepage && /^https?:\/\//.test(r.homepage)))
     .map((r) => ({
       repo: r.name,
@@ -671,6 +692,7 @@ function fromApi(list) {
            : `https://${user}.github.io/${r.name}/`,
       code: r.html_url,
       pushed: r.pushed_at,
+      topics: r.topics || [],
     }));
 }
 function setTools(slim) {
@@ -680,9 +702,10 @@ function setTools(slim) {
     code: m.code || null, pushed: null, mono: initials(m.name),
   }));
   const catOrder = Object.keys(CATEGORY_COLORS);
+  const rank = (c) => { const i = catOrder.indexOf(c); return i < 0 ? catOrder.length - 1.5 : i; };  // new ones just before Other
   tools = slim.filter((r) => !hide.has(String(r.repo).toLowerCase()))   // also cleans old caches
     .map(toTool).concat(manual).sort((a, b) =>
-      (catOrder.indexOf(a.cat) - catOrder.indexOf(b.cat)) || a.name.localeCompare(b.name));
+      (rank(a.cat) - rank(b.cat)) || a.name.localeCompare(b.name));
   tools.forEach((t, i) => { t.no = String(i + 1).padStart(2, '0'); });
   renderChips();
   render();
