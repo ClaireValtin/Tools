@@ -330,6 +330,12 @@ footer {
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
 }
 footer a { color: var(--text); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--accent); }
+.notice {
+  flex-basis: 100%;
+  margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line);
+  text-transform: none; letter-spacing: .02em; color: var(--faint);
+}
+.notice b { color: var(--muted); font-weight: 700; }
 
 @media (prefers-reduced-motion: reduce) {
   .card, .mono { transition: none; animation: none; }
@@ -396,6 +402,12 @@ footer a { color: var(--text); font-weight: 700; text-decoration: none; border-b
   <footer>
     <span>Cards open the live site. "Code" opens the repository.</span>
     <a id="ghLink" href="#" target="_blank" rel="noopener">All repositories →</a>
+    <p class="notice" style="margin-bottom:0">
+      <b>© <span id="year">2026</span> Soufiyan Rehioui. All rights reserved.</b>
+      These tools are shared for personal and professional use by colleagues.
+      If you use them in your work, please credit me. Please don't copy, redistribute
+      or reuse the code without asking first.
+    </p>
   </footer>
 </div>
 
@@ -458,6 +470,7 @@ const user = GITHUB_USER.toLowerCase();
 const $ = (id) => document.getElementById(id);
 const grid = $('grid'), statusEl = $('status'), q = $('q'), viewEl = $('view');
 $('ghLink').href = `https://github.com/${GITHUB_USER}?tab=repositories`;
+$('year').textContent = new Date().getFullYear();
 
 /* On <user>.github.io/<Repo>/, <Repo> is this launcher itself. */
 const SELF_REPO = location.hostname.endsWith('.github.io')
