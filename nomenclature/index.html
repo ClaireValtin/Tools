@@ -531,7 +531,15 @@ function recoderAlleles(arr) {
 async function resolveTranscript(h, notes) {
   try {
     const j = await ens(`/variant_recoder/human/${enc(h)}?fields=id,spdi,hgvsc,hgvsp`);
-    const al = recoderAlleles(j);
+    let al = recoderAlleles(j);
+    if (/:p\./.test(h) && al.length > 1) {
+      // Une notation protéique peut correspondre à plusieurs changements d’ADN : on garde les SNV si il y en a
+      const snv = al.filter((a) => a.spdi38.del.length === 1 && a.spdi38.ins.length === 1);
+      if (snv.length && snv.length < al.length) {
+        notes.push({ t: 'info', m: `${al.length - snv.length} autre(s) possibilité(s) à plusieurs bases (moins probables) masquée(s). Vérifiez avec le c. du compte rendu.` });
+        al = snv;
+      }
+    }
     if (al.length) return al;
     throw new ApiError('aucun variant trouvé');
   } catch (e) {
