@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nomenclature · Convertisseur de variants</title>
+<meta name="description" content="Convertit une variation entre HGVS (c., g., p.), rsID, VCF, SPDI, gnomAD, GTEx et le format AlphaGenome Atlas, en GRCh38 et GRCh37, avec une FAQ sur toutes les nomenclatures.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='9' fill='%230b8a99'/%3E%3Cpath d='M9 11h14M9 16h9M9 21h12' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #eef6f9;
+  --bg-2: #dceef4;
+  --panel: #ffffff;
+  --panel-2: #f4f8fa;
+  --hair: rgba(20, 70, 90, .13);
+  --text: #0e2a33;
+  --muted: #4c6e78;
+  --faint: #7f9ca4;
+  --accent: #0b8a99;
+  --accent-2: #3a7bd5;
+  --accent-ink: #ffffff;
+  --ok: #1f8a4c;
+  --warn: #b26a00;
+  --warn-bg: #fff4e0;
+  --err: #c2372f;
+  --err-bg: #fdecea;
+  --chip: #e6f3f6;
+  --shadow: 0 1px 1px rgba(10,50,70,.04), 0 10px 28px -14px rgba(10,60,80,.25);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #071a26; --bg-2: #04101a; --panel: #0d2533; --panel-2: #112d3d;
+    --hair: rgba(160, 230, 240, .12); --text: #e4f5f8; --muted: #9cc0c8; --faint: #6a8e97;
+    --accent: #4fd8e0; --accent-2: #7aa7ff; --accent-ink: #04202a;
+    --ok: #5fd08c; --warn: #f2b45a; --warn-bg: #3a2a0f; --err: #ff8a80; --err-bg: #3b1715; --chip: #133847;
+    --shadow: 0 1px 1px rgba(0,0,0,.2), 0 14px 36px -16px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #071a26; --bg-2: #04101a; --panel: #0d2533; --panel-2: #112d3d;
+  --hair: rgba(160, 230, 240, .12); --text: #e4f5f8; --muted: #9cc0c8; --faint: #6a8e97;
+  --accent: #4fd8e0; --accent-2: #7aa7ff; --accent-ink: #04202a;
+  --ok: #5fd08c; --warn: #f2b45a; --warn-bg: #3a2a0f; --err: #ff8a80; --err-bg: #3b1715; --chip: #133847;
+  --shadow: 0 1px 1px rgba(0,0,0,.2), 0 14px 36px -16px rgba(0,0,0,.6);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: linear-gradient(180deg, var(--bg), var(--bg-2)) fixed;
+  color: var(--text);
+  font: 15px/1.55 "Plus Jakarta Sans", system-ui, sans-serif;
+  min-height: 100vh; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+code, .m, textarea, input.m { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; }
+a { color: var(--accent); }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 22px 16px 40px; }
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.back { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 14px; }
+.back:hover { color: var(--accent); }
+.icon-btn { border: 1px solid var(--hair); background: var(--panel); color: var(--text); width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; cursor: pointer; }
+.icon-btn svg { width: 18px; height: 18px; }
+h1 { font-size: clamp(26px, 4.4vw, 38px); line-height: 1.12; letter-spacing: -.02em; margin: 22px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 20px; max-width: 760px; }
+.panel { background: var(--panel); border: 1px solid var(--hair); border-radius: 20px; box-shadow: var(--shadow); padding: 18px; }
+label.lbl { display: block; font-weight: 700; font-size: 13px; color: var(--muted); margin: 0 0 6px; text-transform: uppercase; letter-spacing: .04em; }
+textarea { width: 100%; min-height: 140px; resize: vertical; border-radius: 14px; border: 1px solid var(--hair); background: var(--panel-2); color: var(--text); padding: 12px 14px; font-size: 14px; line-height: 1.6; }
+textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; align-items: flex-end; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field span { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+select, input[type=text] { height: 40px; border-radius: 12px; border: 1px solid var(--hair); background: var(--panel-2); color: var(--text); padding: 0 12px; font: inherit; font-size: 14px; }
+input.m { font-size: 13.5px; width: 220px; max-width: 100%; }
+.btn { height: 40px; border-radius: 12px; border: 1px solid transparent; padding: 0 18px; font: inherit; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.primary:disabled { opacity: .6; cursor: progress; }
+.btn.ghost { background: transparent; border-color: var(--hair); color: var(--text); }
+.btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
+.spacer { flex: 1; }
+.examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; align-items: center; }
+.examples > span { font-size: 12.5px; color: var(--faint); margin-right: 4px; }
+.chip { border: 1px solid var(--hair); background: var(--chip); color: var(--text); border-radius: 999px; padding: 4px 10px; font-size: 12.5px; cursor: pointer; font-family: "JetBrains Mono", monospace; }
+.chip:hover { border-color: var(--accent); }
+.status { min-height: 22px; margin: 14px 2px 8px; color: var(--muted); font-size: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.bar { display: none; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+.bar.on { display: flex; }
+.bar .btn { height: 34px; font-size: 13px; padding: 0 12px; }
+.results { display: grid; gap: 14px; }
+.card { background: var(--panel); border: 1px solid var(--hair); border-radius: 18px; box-shadow: var(--shadow); padding: 16px; min-width: 0; }
+.card-h { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.input-echo { font-weight: 600; word-break: break-all; }
+.badge { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 9px; background: var(--chip); color: var(--muted); white-space: nowrap; }
+.badge.gene { background: var(--accent); color: var(--accent-ink); }
+.atlas { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: var(--panel-2); border: 1px solid var(--hair); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; }
+.atlas .k { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.atlas .v { font-size: clamp(16px, 2.6vw, 21px); font-weight: 600; color: var(--accent); word-break: break-all; flex: 1; min-width: 0; }
+table.f { width: 100%; border-collapse: collapse; font-size: 13.5px; table-layout: fixed; }
+table.f th { text-align: left; font-weight: 600; color: var(--muted); width: 210px; padding: 6px 8px 6px 0; vertical-align: top; }
+table.f td { padding: 6px 0; vertical-align: top; word-break: break-all; }
+table.f tr + tr { border-top: 1px solid var(--hair); }
+table.f td .m { font-size: 13px; }
+.cp { border: 1px solid var(--hair); background: transparent; color: var(--muted); border-radius: 8px; height: 26px; padding: 0 8px; font-size: 12px; cursor: pointer; margin-left: 6px; vertical-align: middle; font-family: inherit; }
+.cp:hover { color: var(--accent); border-color: var(--accent); }
+.cp.done { color: var(--ok); border-color: var(--ok); }
+.note { border-radius: 12px; padding: 8px 12px; font-size: 13.5px; margin-top: 8px; }
+.note.warn { background: var(--warn-bg); color: var(--warn); }
+.note.err { background: var(--err-bg); color: var(--err); }
+.note.info { background: var(--chip); color: var(--muted); }
+.more { margin-top: 8px; font-size: 13px; }
+.more summary { cursor: pointer; color: var(--muted); font-weight: 600; }
+.more ul { margin: 6px 0 0; padding-left: 18px; }
+.more li { word-break: break-all; }
+h2 { font-size: 24px; letter-spacing: -.01em; margin: 40px 0 6px; }
+.sub { color: var(--muted); margin: 0 0 14px; }
+.faq details { background: var(--panel); border: 1px solid var(--hair); border-radius: 16px; padding: 0 16px; margin-bottom: 10px; }
+.faq summary { cursor: pointer; padding: 14px 0; font-weight: 700; font-size: 16px; list-style: none; display: flex; gap: 10px; align-items: baseline; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::before { content: "+"; color: var(--accent); font-weight: 800; width: 14px; flex: none; }
+.faq details[open] summary::before { content: "–"; }
+.faq .body { padding: 0 0 14px 24px; color: var(--text); }
+.faq .body p { margin: 0 0 10px; }
+.faq .body ul { margin: 0 0 10px; padding-left: 18px; }
+.faq .body li { margin-bottom: 4px; }
+.faq table { border-collapse: collapse; font-size: 13.5px; margin: 6px 0 12px; width: 100%; }
+.faq th, .faq td { border: 1px solid var(--hair); padding: 6px 8px; text-align: left; vertical-align: top; }
+.faq th { background: var(--panel-2); }
+.tbl-wrap { overflow-x: auto; }
+code { background: var(--chip); border-radius: 6px; padding: 1px 5px; font-size: .92em; }
+footer { margin-top: 36px; color: var(--faint); font-size: 12.5px; }
+.spin { width: 14px; height: 14px; border: 2px solid var(--hair); border-top-color: var(--accent); border-radius: 50%; animation: s 0.8s linear infinite; display: inline-block; }
+@keyframes s { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+@media (max-width: 640px) {
+  table.f th { width: 118px; font-size: 12.5px; }
+  .panel, .card { padding: 14px; }
+  .faq .body { padding-left: 4px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="back" href="../">← Tools</a>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Basculer thème clair / sombre">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+    </button>
+  </header>
+
+  <h1>Convertisseur de nomenclatures</h1>
+  <p class="lead">Collez vos variants dans n’importe quel format : HGVS <code>c.</code> <code>g.</code> <code>p.</code>, rsID, VCF, SPDI, gnomAD, GTEx, coordonnées GRCh37 ou GRCh38. L’outil donne toutes les écritures équivalentes, dans les deux versions du génome, et la chaîne exacte attendue par l’AlphaGenome Atlas.</p>
+
+  <section class="panel" aria-label="Saisie">
+    <label class="lbl" for="inp">Variants (un par ligne)</label>
+    <textarea id="inp" class="m" spellcheck="false" placeholder="NM_000551.4:c.414A>G
+VHL:p.Arg167Trp
+rs5030820
+3-10149921-C-T
+chr3:10191605 C>T   (avec « GRCh37 » choisi ci-dessous)"></textarea>
+    <div class="row">
+      <div class="field">
+        <span>Coordonnées sans version (chr:pos…)</span>
+        <select id="build">
+          <option value="38">sont en GRCh38 (hg38)</option>
+          <option value="37">sont en GRCh37 (hg19)</option>
+        </select>
+      </div>
+      <div class="field">
+        <span>Transcrit ou gène pour les « c. » / « p. » seuls</span>
+        <input id="deftx" class="m" type="text" placeholder="ex. NM_000551.4 ou VHL" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="spacer"></div>
+      <button class="btn ghost" id="clearBtn" type="button">Effacer</button>
+      <button class="btn primary" id="goBtn" type="button">Convertir</button>
+    </div>
+    <div class="examples" id="examples"><span>Exemples :</span></div>
+  </section>
+
+  <div class="status" id="status" aria-live="polite">
+    <span id="statusText">Les chaînes génomiques simples sont lues localement ; HGVS, rsID et liftover passent par Ensembl et NCBI.</span>
+    <div class="bar" id="bar">
+      <button class="btn ghost" id="copyAtlas" type="button">Copier les chaînes Atlas</button>
+      <button class="btn ghost" id="csvBtn" type="button">Exporter CSV</button>
+    </div>
+  </div>
+  <main class="results" id="results" aria-label="Résultats"></main>
+
+  <h2 id="faq">FAQ : les nomenclatures expliquées</h2>
+  <p class="sub">Ce que signifie chaque écriture, pourquoi elles diffèrent, et les pièges classiques.</p>
+  <div class="faq">
+
+    <details open>
+      <summary>Pourquoi existe-t-il autant de façons d’écrire un même variant ?</summary>
+      <div class="body">
+        <p>Parce que chaque communauté décrit le variant par rapport à une <b>séquence de référence différente</b> et pour un <b>usage différent</b> :</p>
+        <ul>
+          <li><b>La clinique</b> écrit par rapport au transcrit (<code>NM_000551.4:c.499C>T</code>) et à la protéine (<code>p.(Arg167Trp)</code>) : c’est lisible et parle de l’effet biologique.</li>
+          <li><b>La bio-informatique</b> écrit par rapport au chromosome (<code>3-10149822-C-T</code>, VCF) : c’est ce que produisent les séquenceurs et ce que lisent les bases de données de population.</li>
+          <li><b>Les bases de données</b> donnent des identifiants (<code>rs5030820</code>, VCV ClinVar) qui désignent une position ou une soumission, pas une écriture.</li>
+        </ul>
+        <p>Un même variant a donc une seule réalité physique (une base change sur le chromosome) mais plusieurs écritures. La conversion consiste à passer de l’une à l’autre <b>sans changer de variant</b>, ce qui demande la bonne séquence de référence, la bonne version du génome, le bon brin et la bonne règle de normalisation.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>HGVS : que veulent dire g., c., n., r., p. et m. ?</summary>
+      <div class="body">
+        <p>HGVS est la nomenclature internationale recommandée en génétique médicale. Le préfixe indique la séquence de référence :</p>
+        <div class="tbl-wrap"><table>
+          <tr><th>Préfixe</th><th>Référence</th><th>Exemple</th></tr>
+          <tr><td><code>g.</code></td><td>Génomique (chromosome <code>NC_</code>, ou région <code>NG_</code>, <code>LRG_</code>)</td><td><code>NC_000003.12:g.10149822C>T</code></td></tr>
+          <tr><td><code>c.</code></td><td>ADN codant (ADNc d’un transcrit codant <code>NM_</code> / <code>ENST</code>)</td><td><code>NM_000551.4:c.499C>T</code></td></tr>
+          <tr><td><code>n.</code></td><td>Transcrit non codant (<code>NR_</code>)</td><td><code>NR_176335.1:n.828C>T</code></td></tr>
+          <tr><td><code>r.</code></td><td>ARN (lettres minuscules)</td><td><code>r.499c>u</code></td></tr>
+          <tr><td><code>p.</code></td><td>Protéine (<code>NP_</code> / <code>ENSP</code>)</td><td><code>NP_000542.1:p.(Arg167Trp)</code></td></tr>
+          <tr><td><code>m.</code></td><td>Mitochondrial (<code>NC_012920.1</code>)</td><td><code>m.3243A>G</code></td></tr>
+        </table></div>
+        <p><b>Numérotation en c. :</b></p>
+        <ul>
+          <li><code>c.1</code> = le A de l’ATG initiateur ; la numérotation suit les exons, les introns sont « sautés ».</li>
+          <li><code>c.-15</code> = 15 nucléotides avant l’ATG (5′UTR) ; <code>c.*70</code> = 70 nucléotides après le codon stop (3′UTR).</li>
+          <li><code>c.340+1</code> = 1<sup>re</sup> base de l’intron après l’exon qui finit en c.340 ; <code>c.341-2</code> = 2 bases avant l’exon qui commence en c.341.</li>
+          <li><code>del</code>, <code>dup</code>, <code>ins</code>, <code>delins</code>, <code>inv</code> décrivent les autres types ; <code>=</code> signifie « inchangé » (<code>p.Pro138=</code>, variant synonyme).</li>
+        </ul>
+        <p>Les parenthèses <code>p.(Arg167Trp)</code> indiquent un effet protéique <b>prédit</b>, non vérifié expérimentalement.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Pourquoi la version du transcrit (.3, .4…) est-elle importante ? Qu’est-ce que MANE ?</summary>
+      <div class="body">
+        <p><code>NM_000551.4</code> et <code>NM_000551.3</code> sont deux versions de la même séquence de référence. Si la séquence a changé (UTR allongé, correction), <b>la même base n’a plus le même numéro</b>. Il faut donc toujours citer la version.</p>
+        <p><b>MANE Select</b> (Matched Annotation from NCBI and EMBL-EBI) désigne, pour chaque gène, un transcrit de référence identique chez RefSeq (<code>NM_</code>) et Ensembl (<code>ENST</code>), par exemple <code>NM_000551.4</code> = <code>ENST00000256474.3</code> pour VHL. C’est le transcrit à utiliser par défaut dans un compte rendu. <b>MANE Plus Clinical</b> ajoute un second transcrit quand un variant pathogène connu tombe hors du MANE Select.</p>
+        <p>Un même variant génomique donne autant d’écritures c. que de transcrits du gène (VHL en a une quinzaine) : c’est pourquoi l’outil met le MANE Select en avant.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Protéine : une lettre ou trois lettres ? Pourquoi ne peut-on pas repartir de p. ?</summary>
+      <div class="body">
+        <p>HGVS recommande le code à 3 lettres (<code>p.Arg167Trp</code>) ; le code à 1 lettre (<code>p.R167W</code>) est toléré. Le stop s’écrit <code>Ter</code> ou <code>*</code> (l’ancien <code>X</code> est déconseillé). <code>fs</code> = décalage du cadre de lecture : <code>p.Cys24SerfsTer16</code>.</p>
+        <p>Le code génétique est redondant : plusieurs codons donnent le même acide aminé. Arg→Trp peut venir de <code>CGG→TGG</code> ou <code>AGG→TGG</code>… Un <code>p.</code> peut donc correspondre à <b>plusieurs variants d’ADN</b>. L’outil passe par Ensembl, qui renvoie les possibilités compatibles avec la séquence ; vérifiez toujours avec le <code>c.</code> du compte rendu.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>rsID, VCV ClinVar, CA… : des identifiants, pas des écritures</summary>
+      <div class="body">
+        <ul>
+          <li><b>rsID</b> (dbSNP) : identifie une <b>position</b> (et un type de variation), pas un allèle. <code>rs28940298</code> couvre C>T, C>A et C>G : l’outil affiche une fiche par allèle. Des rsID peuvent être fusionnés au fil des versions.</li>
+          <li><b>VCV / RCV / SCV</b> (ClinVar) : identifient un enregistrement ClinVar (variant, couple variant-maladie, soumission). Ils ne se convertissent pas directement en coordonnées ici : ouvrez la fiche ClinVar pour lire le HGVS.</li>
+          <li><b>CA…</b> (ClinGen Allele Registry) : identifiant d’allèle canonique, indépendant de la version du génome.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>VCF, SPDI, gnomAD, GTEx, AlphaGenome : les formats « coordonnées »</summary>
+      <div class="body">
+        <div class="tbl-wrap"><table>
+          <tr><th>Format</th><th>Exemple (VHL c.598C>T)</th><th>Particularités</th></tr>
+          <tr><td>VCF</td><td><code>3 10149921 . C T</code></td><td>Position 1-based. Pour un indel, on ajoute la base précédente (« base d’ancrage ») : une délétion de AC s’écrit <code>TAC → T</code>.</td></tr>
+          <tr><td>gnomAD</td><td><code>3-10149921-C-T</code></td><td>Même logique que le VCF, séparateur tiret, sans « chr ».</td></tr>
+          <tr><td>GTEx</td><td><code>chr3_10149921_C_T_b38</code></td><td>Avec « chr » et suffixe de build.</td></tr>
+          <tr><td>Open Targets</td><td><code>3_10149921_C_T</code></td><td>Sans « chr ».</td></tr>
+          <tr><td>AlphaGenome Atlas</td><td><code>chr3:10149921:C>T</code></td><td>GRCh38 uniquement, « chr » obligatoire, REF = base du génome.</td></tr>
+          <tr><td>SPDI</td><td><code>NC_000003.12:10149920:C:T</code></td><td>Sequence:Position:Deletion:Insertion, <b>0-based</b> (position − 1), sans base d’ancrage. Format interne de NCBI.</td></tr>
+          <tr><td>BED</td><td><code>chr3 10149920 10149921</code></td><td>0-based, début inclus, fin exclue : piège classique de décalage d’une base.</td></tr>
+        </table></div>
+      </div>
+    </details>
+
+    <details>
+      <summary>GRCh37 (hg19) contre GRCh38 (hg38) : pourquoi les positions changent</summary>
+      <div class="body">
+        <p>GRCh38 (2013) est une nouvelle version de la séquence de référence humaine : des erreurs ont été corrigées, des trous comblés, des régions réorganisées et des séquences alternatives ajoutées. Les coordonnées <b>ne sont pas décalées d’une constante</b> pour tout le génome : le décalage dépend de la région (+41 684 pb pour VHL, autre chose ailleurs).</p>
+        <ul>
+          <li><b>Liftover</b> = conversion d’une version à l’autre par alignement des deux assemblages. Il peut échouer (région absente d’une version), inverser le brin, ou tomber sur une base de référence différente.</li>
+          <li><b>hg19 ≠ exactement GRCh37</b> : UCSC préfixe « chr » et utilisait un chrM différent (pas la séquence de Cambridge révisée <code>NC_012920.1</code>). Pour le mitochondrial, méfiance.</li>
+          <li>Les accessions RefSeq trahissent la version : <code>NC_000003.11</code> = chr3 GRCh37, <code>NC_000003.12</code> = chr3 GRCh38.</li>
+          <li>Les grands outils récents (gnomAD v4, AlphaGenome, ClinVar) sont en GRCh38 ; beaucoup d’anciens rapports et panels sont en GRCh37.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Brin + et brin − : pourquoi la base du c. diffère parfois de la base du génome</summary>
+      <div class="body">
+        <p>Les coordonnées génomiques (VCF, gnomAD, Atlas) sont toujours écrites sur le <b>brin +</b> du chromosome. Le <code>c.</code> est écrit dans le sens du transcrit. Pour un gène sur le brin +, comme VHL, les bases sont identiques : <code>c.598C>T</code> = <code>3-10149921-C-T</code>. Pour un gène sur le brin −, comme BRCA1, il faut prendre le <b>complément</b> : un <code>c.…G>A</code> devient <code>C>T</code> sur le génome, et les positions c. croissantes correspondent à des positions génomiques décroissantes.</p>
+        <p>L’outil signale les gènes sur le brin −.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Normalisation des indels : la même délétion à deux positions différentes</summary>
+      <div class="body">
+        <p>Dans une répétition (ex. <code>…AGAGAG…</code>), supprimer « AG » donne la même séquence quel que soit le AG supprimé. Il faut donc une règle :</p>
+        <ul>
+          <li><b>HGVS</b> place le variant le plus en <b>3′</b> possible, dans le sens du transcrit pour un <code>c.</code>.</li>
+          <li><b>VCF</b> place le variant le plus à <b>gauche</b> possible sur le génome (left-alignment).</li>
+        </ul>
+        <p>Résultat : une même délétion peut avoir des positions HGVS et VCF différentes, et pour un gène sur le brin −, le « 3′ du transcrit » est à gauche sur le génome. Les outils sérieux (Ensembl, NCBI, ce convertisseur) normalisent avant de comparer.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Anciennes nomenclatures : 185delAG, IVS2-2A>G…</summary>
+      <div class="body">
+        <p>Avant l’adoption générale de HGVS, beaucoup de variants étaient numérotés depuis le premier nucléotide de la séquence ADNc publiée (et non depuis l’ATG), ou décrits par intron (<code>IVS2-2A>G</code> = 2 bases avant l’exon 3, soit <code>c.[début exon 3]-2A>G</code>). Exemple célèbre : <code>BRCA1 185delAG</code>, aujourd’hui <code>c.68_69del</code>. Ces écritures ne peuvent pas être converties automatiquement de façon sûre : cherchez l’équivalence HGVS dans ClinVar ou la littérature.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Pourquoi l’AlphaGenome Atlas refuse-t-il mon variant ?</summary>
+      <div class="body">
+        <ul>
+          <li>Vous avez collé un <b>HGVS</b> (<code>c.</code>, <code>p.</code>) ou un <b>rsID</b> : l’Atlas attend <code>chr:pos:REF>ALT</code> en GRCh38.</li>
+          <li>Les coordonnées sont en <b>GRCh37</b> : convertissez-les.</li>
+          <li><b>REF et ALT sont inversés</b>, ou REF ne correspond pas au génome de référence (souvent à cause du brin −).</li>
+          <li>C’est un <b>indel</b> ou un variant de plusieurs bases : l’Atlas précalcule tous les SNV, mais seulement les indels déjà observés (gnomAD, UK Biobank, All of Us). Pour les autres, utilisez l’API AlphaGenome (<code>score_variant</code>).</li>
+          <li>Il manque le préfixe <b>chr</b>, ou les bases sont en minuscules.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details>
+      <summary>Quelles données sont envoyées, et à qui ?</summary>
+      <div class="body">
+        <p>Les formats génomiques simples sont reformatés directement dans votre navigateur. Pour les HGVS, rsID, liftover et annotations, la notation du variant (et rien d’autre) est envoyée aux services publics <b>Ensembl REST</b> (EMBL-EBI) et <b>NCBI Variation Services</b>. N’ajoutez jamais d’identifiant de patient dans la zone de saisie. Rien n’est stocké par cette page.</p>
+      </div>
+    </details>
+  </div>
+
+  <footer>
+    Données : <a href="https://rest.ensembl.org" target="_blank" rel="noopener">Ensembl REST</a> (Variant Recoder, VEP, mapping d’assemblage) et <a href="https://api.ncbi.nlm.nih.gov/variation/v0/" target="_blank" rel="noopener">NCBI Variation Services</a>. Outil d’aide à la conversion : vérifiez toujours un résultat avant un usage clinique.
+  </footer>
+</div>
+
+<script>
+'use strict';
+/* ───────── Références ───────── */
+const ACC = {
+  38: { '1':'NC_000001.11','2':'NC_000002.12','3':'NC_000003.12','4':'NC_000004.12','5':'NC_000005.10','6':'NC_000006.12','7':'NC_000007.14','8':'NC_000008.11','9':'NC_000009.12','10':'NC_000010.11','11':'NC_000011.10','12':'NC_000012.12','13':'NC_000013.11','14':'NC_000014.9','15':'NC_000015.10','16':'NC_000016.10','17':'NC_000017.11','18':'NC_000018.10','19':'NC_000019.10','20':'NC_000020.11','21':'NC_000021.9','22':'NC_000022.11','X':'NC_000023.11','Y':'NC_000024.10','MT':'NC_012920.1' },
+  37: { '1':'NC_000001.10','2':'NC_000002.11','3':'NC_000003.11','4':'NC_000004.11','5':'NC_000005.9','6':'NC_000006.11','7':'NC_000007.13','8':'NC_000008.10','9':'NC_000009.11','10':'NC_000010.10','11':'NC_000011.9','12':'NC_000012.11','13':'NC_000013.10','14':'NC_000014.8','15':'NC_000015.9','16':'NC_000016.9','17':'NC_000017.10','18':'NC_000018.9','19':'NC_000019.9','20':'NC_000020.10','21':'NC_000021.8','22':'NC_000022.10','X':'NC_000023.10','Y':'NC_000024.9','MT':'NC_012920.1' },
+};
+const ACC_INFO = {};
+for (const b of [37, 38]) for (const [c, a] of Object.entries(ACC[b])) if (c !== 'MT') ACC_INFO[a] = { chr: c, build: b };
+ACC_INFO['NC_012920.1'] = { chr: 'MT', build: 38 };
+
+const AA = { A:'Ala', R:'Arg', N:'Asn', D:'Asp', C:'Cys', Q:'Gln', E:'Glu', G:'Gly', H:'His', I:'Ile', L:'Leu', K:'Lys', M:'Met', F:'Phe', P:'Pro', S:'Ser', T:'Thr', W:'Trp', Y:'Tyr', V:'Val', '*':'Ter', X:'Ter', U:'Sec' };
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} }
+function load(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (_) { return null; } }
+
+/* ───────── Thème ───────── */
+(function () {
+  const saved = load('nomenclature:theme');
+  if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+  $('themeBtn').addEventListener('click', () => {
+    const cur = document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    store('nomenclature:theme', next);
+  });
+})();
+
+/* ───────── Réseau ───────── */
+class ApiError extends Error {}
+async function getJSON(url, { tries = 3, timeout = 30000 } = {}) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    const ctl = new AbortController();
+    const t = setTimeout(() => ctl.abort(), timeout);
+    try {
+      const r = await fetch(url, { headers: { Accept: 'application/json' }, signal: ctl.signal });
+      clearTimeout(t);
+      const txt = await r.text();
+      let j = null; try { j = JSON.parse(txt); } catch (_) {}
+      if (r.ok && j) return j;
+      if (j && (j.error || (j.data && j.data.error))) {
+        const msg = typeof j.error === 'string' ? j.error : (j.error && j.error.message) || JSON.stringify(j.error);
+        if (r.status >= 400 && r.status < 500 && r.status !== 429) throw new ApiError(msg);
+        last = new Error(msg);
+      } else last = new Error(`HTTP ${r.status}`);
+    } catch (e) {
+      clearTimeout(t);
+      if (e instanceof ApiError) throw e;
+      last = e.name === 'AbortError' ? new Error('délai dépassé') : e;
+    }
+    await sleep(1000 * 2 ** i);
+  }
+  throw last;
+}
+const ENS = 'https://rest.ensembl.org';
+const ens = (path) => getJSON(ENS + path);
+let ncbiNext = 0;
+async function ncbi(path) {           // NCBI : au plus ~1 requête par seconde
+  const now = Date.now();
+  const wait = Math.max(0, ncbiNext - now);
+  ncbiNext = Math.max(now, ncbiNext) + 1050;
+  if (wait) await sleep(wait);
+  return getJSON('https://api.ncbi.nlm.nih.gov/variation/v0' + path);
+}
+const enc = encodeURIComponent;
+
+/* ───────── Lecture des lignes ───────── */
+function normChr(c) {
+  c = String(c).replace(/^chr/i, '').toUpperCase();
+  if (c === 'M') c = 'MT';
+  if (c === '23') c = 'X';
+  if (c === '24') c = 'Y';
+  return ACC[38][c] ? c : null;
+}
+function oneToThree(p) {      // p.R167W → p.Arg167Trp
+  return p.replace(/p\.\(?([A-Z*])(\d+)([A-Z*=]|fs\*?\d*|del|dup)?\)?$/i, (m, a, n, b) => {
+    const A = AA[a.toUpperCase()]; if (!A) return m;
+    let B = '';
+    if (b) B = b === '=' ? '=' : (AA[b.toUpperCase()] || b);
+    return `p.${A}${n}${B}`;
+  });
+}
+function parseLine(raw, defBuild, defTx) {
+  let s = raw.trim().replace(/\s+#.*$/, '').replace(/[–—]/g, '-').replace(/ /g, ' ');
+  s = s.replace(/\s*\((?:GRCh|hg)\s*3[78][^)]*\)\s*$/i, '');
+  if (!s) return null;
+  let m;
+  const buildIn = /\b(GRCh38|hg38|b38)\b/i.test(raw) ? 38 : /\b(GRCh37|hg19|b37)\b/i.test(raw) ? 37 : null;
+  const B = buildIn || defBuild;
+  // rsID
+  if ((m = s.match(/^rs(\d+)$/i))) return { kind: 'rs', id: 'rs' + m[1] };
+  // SPDI
+  if ((m = s.match(/^(NC_0\d{5}\.\d+):(\d+):([ACGTN]*):([ACGTN]*)$/i))) {
+    const info = ACC_INFO[m[1].toUpperCase()];
+    if (!info) return { kind: 'error', msg: `Accession ${m[1]} inconnue (seules les NC_ des chromosomes GRCh37/38 sont reconnues).` };
+    return { kind: 'gen', build: info.build, chr: info.chr, spdi: { seq: m[1].toUpperCase(), pos: +m[2], del: m[3].toUpperCase(), ins: m[4].toUpperCase() } };
+  }
+  // HGVS génomique sur NC_
+  if ((m = s.match(/^(NC_0\d{5}\.\d+):g\.(.+)$/i))) {
+    const info = ACC_INFO[m[1].toUpperCase()];
+    if (!info) return { kind: 'error', msg: `Accession ${m[1]} inconnue.` };
+    return { kind: 'hgvsg', build: info.build, chr: info.chr, hgvs: `${m[1].toUpperCase()}:g.${m[2]}` };
+  }
+  // Formats à 4 champs
+  const pats = [
+    /^(?:chr)?([0-9]{1,2}|X|Y|MT?)[:\s]+(?:g\.)?(\d[\d,]*)\s*:?\s*([ACGTN]+)\s*>\s*([ACGTN]+)$/i,           // chr3:10149921:C>T, 3:10149921 C>T, chr3:g.10149921C>T
+    /^(?:chr)?([0-9]{1,2}|X|Y|MT?)_(\d+)_([ACGTN]+)_([ACGTN]+)(?:_b(3[78]))?$/i,                              // GTEx / Open Targets
+    /^(?:chr)?([0-9]{1,2}|X|Y|MT?)-(\d+)-([ACGTN]+)-([ACGTN]+)$/i,                                            // gnomAD
+    /^(?:chr)?([0-9]{1,2}|X|Y|MT?):(\d+):([ACGTN]+):([ACGTN]+)$/i,                                            // BigQuery
+    /^(?:chr)?([0-9]{1,2}|X|Y|MT?)\s+(\d+)\s+(?:\S+\s+)?([ACGTN]+)\s+([ACGTN]+(?:,[ACGTN]+)*)(?:\s.*)?$/i,    // ligne VCF
+  ];
+  for (const re of pats) {
+    if ((m = s.match(re))) {
+      const chr = normChr(m[1]);
+      if (!chr) return { kind: 'error', msg: `Chromosome « ${m[1]} » non reconnu.` };
+      const b = m[5] && /^3[78]$/.test(m[5]) ? +m[5] : B;
+      const pos = +String(m[2]).replace(/,/g, '');
+      const ref = m[3].toUpperCase();
+      return m[4].split(',').map((alt) => ({ kind: 'gen', build: b, chr, vcf: { pos, ref, alt: alt.toUpperCase() } }));
+    }
+  }
+  // Position ou région seule → liftover
+  if ((m = s.match(/^(?:chr)?([0-9]{1,2}|X|Y|MT?)[:\s]+([\d,]+)(?:\s*-\s*([\d,]+))?$/i))) {
+    const chr = normChr(m[1]);
+    if (!chr) return { kind: 'error', msg: `Chromosome « ${m[1]} » non reconnu.` };
+    const a = +m[2].replace(/,/g, ''), z = m[3] ? +m[3].replace(/,/g, '') : a;
+    return { kind: 'region', build: B, chr, start: Math.min(a, z), end: Math.max(a, z) };
+  }
+  // HGVS transcrit / protéine / gène
+  let h = s.replace(/^([A-Z]{1,3}_\d+(?:\.\d+)?)\s*\([^)]*\)\s*:/i, '$1:')   // NM_000551.4(VHL):c.
+           .replace(/^([A-Za-z0-9._-]+)\s+([cgnrpm]\.)/, '$1:$2');              // VHL c.598C>T
+  if (/^[cnpr]\./i.test(h)) {
+    if (!defTx) return { kind: 'error', msg: 'Notation sans transcrit : indiquez un transcrit ou un gène dans le champ « Transcrit ou gène ».' };
+    h = defTx.trim() + ':' + h;
+  }
+  if (/^[A-Za-z0-9._-]+:[cnpr]\./.test(h)) {
+    h = h.replace(/:p\.\((.*)\)$/, ':p.$1');
+    if (/:p\./.test(h)) h = h.replace(/(:)(p\..*)$/, (mm, c, p) => c + oneToThree(p));
+    h = h.replace(/(:c\.[^ ]*?)([acgt]+)>([acgt]+)$/, (mm, a, r, x) => a + r.toUpperCase() + '>' + x.toUpperCase());
+    return { kind: 'hgvs', hgvs: h };
+  }
+  if (/^(IVS|EX)\d/i.test(s) || /^\d+del[ACGT]+$/i.test(s)) return { kind: 'error', msg: 'Ancienne nomenclature (IVS, numérotation non HGVS) : impossible à convertir automatiquement. Voir la FAQ.' };
+  if (/^(VCV|RCV|SCV)\d+/i.test(s)) return { kind: 'error', msg: 'Identifiant ClinVar : ouvrez la fiche ClinVar pour lire le HGVS ou la position, puis collez-la ici.' };
+  return { kind: 'error', msg: 'Format non reconnu. Voir les exemples ou la FAQ.' };
+}
+
+/* ───────── Conversions locales ───────── */
+const spdiStr = (s) => `${s.seq}:${s.pos}:${s.del}:${s.ins}`;
+function vcfToSpdi(build, chr, v) { return { seq: ACC[build][chr], pos: v.pos - 1, del: v.ref, ins: v.alt }; }
+function isSimple(s) { return s.del.length === s.ins.length && s.del.length >= 1; }   // SNV ou MNV
+function spdiToVcfLocal(s) { return isSimple(s) ? { pos: s.pos + 1, ref: s.del, alt: s.ins } : null; }
+function hgvsgLocal(s) {
+  if (s.del.length === 1 && s.ins.length === 1) return `${s.seq}:g.${s.pos + 1}${s.del}>${s.ins}`;
+  if (isSimple(s)) return `${s.seq}:g.${s.pos + 1}_${s.pos + s.del.length}delins${s.ins}`;
+  return null;
+}
+function fromNcbiSpdi(x) { return { seq: x.seq_id, pos: x.position, del: x.deleted_sequence, ins: x.inserted_sequence }; }
+
+async function vcfOf(s) {
+  const l = spdiToVcfLocal(s); if (l) return l;
+  const j = await ncbi(`/spdi/${enc(spdiStr(s))}/vcf_fields`);
+  return { pos: j.data.pos, ref: j.data.ref, alt: j.data.alt };
+}
+async function hgvsgOf(s) {
+  const l = hgvsgLocal(s); if (l) return l;
+  const j = await ncbi(`/spdi/${enc(spdiStr(s))}/hgvs`);
+  return j.data.hgvs;
+}
+
+/* ───────── Résolution ───────── */
+function recoderAlleles(arr) {
+  const out = [];
+  for (const item of arr || []) {
+    for (const [allele, d] of Object.entries(item)) {
+      if (allele === 'warnings' || !d || typeof d !== 'object' || Array.isArray(d)) continue;
+      const sp = (d.spdi || []).find((x) => /^NC_0/.test(x));
+      if (!sp) continue;
+      const [seq, pos, del, ins] = sp.split(':');
+      out.push({ spdi38: { seq, pos: +pos, del, ins }, rs: (d.id || []).filter((x) => /^rs\d/.test(x)), hgvsc: d.hgvsc || [], hgvsp: d.hgvsp || [] });
+    }
+  }
+  return out;
+}
+async function resolveTranscript(h, notes) {
+  try {
+    const j = await ens(`/variant_recoder/human/${enc(h)}?fields=id,spdi,hgvsc,hgvsp`);
+    const al = recoderAlleles(j);
+    if (al.length) return al;
+    throw new ApiError('aucun variant trouvé');
+  } catch (e) {
+    if (e instanceof ApiError && !/:c\.|:n\./.test(h)) throw new Error(`Ensembl : ${e.message}`);
+    // Secours NCBI (variants exoniques sur transcrit RefSeq)
+    if (!/^N[MR]_/.test(h)) throw new Error(`Ensembl indisponible ou notation refusée (${e.message}). Réessayez, ou utilisez un transcrit NM_.`);
+    notes.push({ t: 'info', m: `Ensembl n’a pas répondu (${e.message}) : conversion faite via NCBI.` });
+    const c = await ncbi(`/hgvs/${enc(h)}/contextuals`);
+    const sp = c.data.spdis[0];
+    const eq = await ncbi(`/spdi/${enc(spdiStr(fromNcbiSpdi(sp)))}/all_equivalent_contextual`);
+    const g = eq.data.spdis.find((x) => ACC_INFO[x.seq_id] && ACC_INFO[x.seq_id].build === 38);
+    if (!g) throw new Error('NCBI : pas de position GRCh38 trouvée.');
+    return [{ spdi38: fromNcbiSpdi(g), rs: [], hgvsc: [h], hgvsp: [] }];
+  }
+}
+async function resolveRs(id, notes) {
+  try {
+    const j = await ens(`/variant_recoder/human/${enc(id)}?fields=id,spdi,hgvsc,hgvsp`);
+    const al = recoderAlleles(j);
+    if (al.length) return al;
+    throw new ApiError(`${id} introuvable`);
+  } catch (e) {
+    notes.push({ t: 'info', m: `Ensembl n’a pas répondu (${e.message}) : allèles lus dans dbSNP (NCBI).` });
+    const j = await ncbi(`/refsnp/${id.slice(2)}`);
+    const pl = (j.primary_snapshot_data?.placements_with_allele || []).find((p) => ACC_INFO[p.seq_id] && ACC_INFO[p.seq_id].build === 38);
+    if (!pl) throw new Error(`${id} : pas de placement GRCh38.`);
+    return pl.alleles.map((a) => a.allele.spdi).filter((s) => s.deleted_sequence !== s.inserted_sequence)
+      .map((s) => ({ spdi38: fromNcbiSpdi(s), rs: [id], hgvsc: [], hgvsp: [] }));
+  }
+}
+async function to38(spdi, build, notes) {
+  if (build === 38) return spdi;
+  try {
+    const eq = await ncbi(`/spdi/${enc(spdiStr(spdi))}/all_equivalent_contextual`);
+    const s37 = eq.data.spdis.find((x) => x.seq_id === spdi.seq);
+    if (s37 && isSimple(spdi) && s37.deleted_sequence !== spdi.del) notes.push({ t: 'err', m: `La base de référence GRCh37 à cette position est ${s37.deleted_sequence}, pas ${spdi.del}. Vérifiez la version du génome et le brin.` });
+    const g = eq.data.spdis.find((x) => ACC_INFO[x.seq_id] && ACC_INFO[x.seq_id].build === 38);
+    if (g) return fromNcbiSpdi(g);
+    throw new Error('aucune position GRCh38 équivalente');
+  } catch (e) {
+    notes.push({ t: 'info', m: `Liftover NCBI indisponible (${e.message}) : liftover Ensembl utilisé.` });
+    const chr = ACC_INFO[spdi.seq].chr;
+    const a = spdi.pos + 1, z = spdi.pos + Math.max(1, spdi.del.length);
+    const j = await ens(`/map/human/GRCh37/${chr}:${a}..${z}:1/GRCh38?`);
+    const mp = j.mappings && j.mappings[0];
+    if (!mp) throw new Error('liftover impossible : région absente de GRCh38');
+    if (mp.mapped.strand === -1) notes.push({ t: 'warn', m: 'La région est inversée entre GRCh37 et GRCh38 : vérifiez les allèles.' });
+    return { seq: ACC[38][chr], pos: mp.mapped.start - 1, del: spdi.del, ins: spdi.ins };
+  }
+}
+async function enrich(rec) {
+  const s38 = rec.spdi38;
+  const chr = ACC_INFO[s38.seq]?.chr;
+  rec.chr = chr;
+  // Coordonnées GRCh38
+  try { rec.vcf38 = await vcfOf(s38); } catch (e) { rec.notes.push({ t: 'err', m: `VCF GRCh38 : ${e.message}` }); }
+  try { rec.hgvsg38 = await hgvsgOf(s38); } catch (e) { /* non bloquant */ }
+  // GRCh37
+  try {
+    const eq = await ncbi(`/spdi/${enc(spdiStr(s38))}/all_equivalent_contextual`);
+    const g38 = eq.data.spdis.find((x) => x.seq_id === s38.seq);
+    if (g38 && isSimple(s38) && g38.deleted_sequence !== s38.del) rec.notes.push({ t: 'err', m: `La base de référence GRCh38 à cette position est ${g38.deleted_sequence}, pas ${s38.del} : REF ne correspond pas au génome (allèles inversés ou mauvais brin ?).` });
+    const g37 = eq.data.spdis.find((x) => ACC_INFO[x.seq_id] && ACC_INFO[x.seq_id].build === 37);
+    if (g37) rec.spdi37 = fromNcbiSpdi(g37);
+    rec.nmEq = eq.data.spdis.filter((x) => /^N[MR]_/.test(x.seq_id)).map((x) => x.seq_id);
+  } catch (e) {
+    if (rec.vcf38) {
+      try {
+        const z = rec.vcf38.pos + rec.vcf38.ref.length - 1;
+        const j = await ens(`/map/human/GRCh38/${chr}:${rec.vcf38.pos}..${z}:1/GRCh37?`);
+        const mp = j.mappings && j.mappings[0];
+        if (mp) rec.vcf37 = { pos: mp.mapped.start, ref: rec.vcf38.ref, alt: rec.vcf38.alt, approx: true };
+      } catch (_) { rec.notes.push({ t: 'info', m: 'GRCh37 indisponible pour le moment (NCBI et Ensembl injoignables).' }); }
+    }
+  }
+  if (rec.spdi37) {
+    try { rec.vcf37 = await vcfOf(rec.spdi37); } catch (_) {}
+    try { rec.hgvsg37 = await hgvsgOf(rec.spdi37); } catch (_) {}
+  }
+  // Annotation VEP (gène, MANE, rsID)
+  const hg = rec.hgvsg38 || hgvsgLocal(s38);
+  if (hg) {
+    try {
+      const j = await ens(`/vep/human/hgvs/${enc(hg)}?merged=1&mane=1&hgvs=1&variant_class=1`);
+      const v = j[0];
+      rec.cls = v.variant_class;
+      const rs = (v.colocated_variants || []).map((c) => c.id).filter((x) => /^rs\d/.test(x));
+      rec.rs = [...new Set([...(rec.rs || []), ...rs])];
+      const tcs = v.transcript_consequences || [];
+      const mane = tcs.filter((t) => (t.mane || []).includes('MANE_Select'));
+      const nm = mane.find((t) => /^NM_/.test(t.transcript_id)), en = mane.find((t) => /^ENST/.test(t.transcript_id));
+      const any = nm || en || tcs.find((t) => t.canonical) || tcs[0];
+      if (any) { rec.gene = any.gene_symbol; rec.strand = any.strand; rec.csq = (any.consequence_terms || [])[0]; }
+      if (!rec.csq) rec.csq = v.most_severe_consequence;
+      if (nm) { rec.maneC = nm.hgvsc; rec.maneP = nm.hgvsp; }
+      if (en) { rec.enstC = en.hgvsc; rec.enstP = en.hgvsp; }
+      rec.otherC = [...new Set(tcs.map((t) => t.hgvsc).filter(Boolean))];
+    } catch (e) {
+      if (e instanceof ApiError && /does not match/i.test(e.message)) rec.notes.push({ t: 'err', m: `Ensembl : ${e.message}` });
+      else rec.notes.push({ t: 'info', m: `Annotation Ensembl indisponible (${e.message}).` });
+    }
+  }
+  if (!rec.otherC?.length && rec.hgvsc?.length) rec.otherC = rec.hgvsc;
+  // Avertissements
+  const v = rec.vcf38;
+  if (v && !(v.ref.length === 1 && v.alt.length === 1)) rec.notes.push({ t: 'warn', m: 'Indel ou variant de plusieurs bases : l’Atlas ne contient que les indels déjà observés dans les grandes cohortes. S’il n’est pas trouvé, utilisez l’API AlphaGenome (score_variant).' });
+  if (rec.strand === -1) rec.notes.push({ t: 'info', m: `${rec.gene || 'Ce gène'} est sur le brin − : les bases du c. sont complémentaires des bases génomiques (REF/ALT ci-dessus).` });
+  if (chr === 'MT') rec.notes.push({ t: 'warn', m: 'Variant mitochondrial : l’Atlas AlphaGenome couvre le génome nucléaire.' });
+  return rec;
+}
+
+async function processItem(it, notes) {
+  if (it.kind === 'gen') {
+    const s = it.spdi || vcfToSpdi(it.build, it.chr, it.vcf);
+    const s38 = await to38(s, it.build, notes);
+    return [{ spdi38: s38, rs: [], hgvsc: [], hgvsp: [] }];
+  }
+  if (it.kind === 'hgvsg') {
+    if (it.build === 38) {
+      try { return await resolveTranscript(it.hgvs, notes); } catch (_) { /* secours NCBI ci-dessous */ }
+    }
+    const c = await ncbi(`/hgvs/${enc(it.hgvs)}/contextuals`);
+    const s = fromNcbiSpdi(c.data.spdis[0]);
+    return [{ spdi38: await to38(s, it.build, notes), rs: [], hgvsc: [], hgvsp: [] }];
+  }
+  if (it.kind === 'hgvs') return resolveTranscript(it.hgvs, notes);
+  if (it.kind === 'rs') return resolveRs(it.id, notes);
+  throw new Error('type inconnu');
+}
+
+/* ───────── Liftover de région ───────── */
+async function liftRegion(it) {
+  const from = it.build === 37 ? 'GRCh37' : 'GRCh38', to = it.build === 37 ? 'GRCh38' : 'GRCh37';
+  const j = await ens(`/map/human/${from}/${it.chr}:${it.start}..${it.end}:1/${to}?`);
+  return { from, to, maps: (j.mappings || []).map((m) => ({ o: m.original, t: m.mapped })) };
+}
+
+/* ───────── Affichage ───────── */
+const ROWS = [];
+function cpBtn(v) { return v ? `<button class="cp" type="button" data-copy="${esc(v)}">Copier</button>` : ''; }
+function row(k, v, mono = true) { return v ? `<tr><th>${esc(k)}</th><td><span class="${mono ? 'm' : ''}">${esc(v)}</span>${cpBtn(v)}</td></tr>` : ''; }
+function fmt(rec) {
+  const c = rec.chr, v = rec.vcf38, w = rec.vcf37;
+  const f = {};
+  if (v) {
+    const cc = c === 'MT' ? 'M' : c;
+    f.atlas = `chr${cc}:${v.pos}:${v.ref}>${v.alt}`;
+    f.gtex = `chr${cc}_${v.pos}_${v.ref}_${v.alt}_b38`;
+    f.gnomad = `${c}-${v.pos}-${v.ref}-${v.alt}`;
+    f.ot = `${c}_${v.pos}_${v.ref}_${v.alt}`;
+    f.bq = `${c}:${v.pos}:${v.ref}:${v.alt}`;
+    f.vcf = `${c}\t${v.pos}\t.\t${v.ref}\t${v.alt}`;
+  }
+  if (w) { f.g37 = `${c}-${w.pos}-${w.ref}-${w.alt}`; f.g37c = `chr${c}:${w.pos}:${w.ref}>${w.alt}`; }
+  return f;
+}
+function renderCard(input, rec, extraNotes, line) {
+  const f = fmt(rec);
+  ROWS.push({ input, rec, f, line });
+  const notes = [...extraNotes, ...rec.notes];
+  const badges = [
+    rec.gene ? `<span class="badge gene">${esc(rec.gene)}</span>` : '',
+    rec.csq ? `<span class="badge">${esc(rec.csq.replace(/_/g, ' '))}</span>` : '',
+    rec.cls ? `<span class="badge">${esc(rec.cls)}</span>` : '',
+  ].join('');
+  const others = (rec.otherC || []).filter((x) => x !== rec.maneC && x !== rec.enstC);
+  return `<article class="card">
+    <div class="card-h"><span class="input-echo m">${esc(input)}</span>${badges}</div>
+    ${f.atlas ? `<div class="atlas"><span class="k">AlphaGenome Atlas</span><span class="v m">${esc(f.atlas)}</span>${cpBtn(f.atlas)}</div>` : ''}
+    <table class="f">
+      ${row('HGVS c. (MANE Select)', rec.maneC)}
+      ${row('HGVS p. (MANE Select)', rec.maneP)}
+      ${row('HGVS c. (Ensembl MANE)', rec.enstC)}
+      ${row('dbSNP', (rec.rs || []).join(', '))}
+      ${row('HGVS g. GRCh38', rec.hgvsg38)}
+      ${row('SPDI GRCh38', rec.spdi38 ? spdiStr(rec.spdi38) : '')}
+      ${row('gnomAD / VCF (GRCh38)', f.gnomad)}
+      ${row('GTEx', f.gtex)}
+      ${row('Open Targets', f.ot)}
+      ${row('Open Targets BigQuery', f.bq)}
+      ${row('GRCh37 (hg19)', f.g37 ? f.g37 + (rec.vcf37.approx ? '  (position via Ensembl, allèles non revérifiés)' : '') : '')}
+      ${row('HGVS g. GRCh37', rec.hgvsg37)}
+    </table>
+    ${others.length ? `<details class="more"><summary>${others.length} autre(s) transcrit(s)</summary><ul class="m">${others.slice(0, 40).map((x) => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
+    ${notes.map((n) => `<div class="note ${n.t}">${esc(n.m)}</div>`).join('')}
+  </article>`;
+}
+function renderError(input, msg) {
+  return `<article class="card"><div class="card-h"><span class="input-echo m">${esc(input)}</span></div><div class="note err">${esc(msg)}</div></article>`;
+}
+function renderRegion(input, r) {
+  const lines = r.maps.length ? r.maps.map((m) => `<tr><th>${esc(r.from)} ${esc(m.o.seq_region_name)}:${m.o.start.toLocaleString('fr-FR')}-${m.o.end.toLocaleString('fr-FR')}</th><td><span class="m">${esc(`chr${m.t.seq_region_name}:${m.t.start}-${m.t.end}`)}</span>${cpBtn(`chr${m.t.seq_region_name}:${m.t.start}-${m.t.end}`)}${m.t.strand === -1 ? ' <span class="badge">brin inversé</span>' : ''}</td></tr>`).join('') : '';
+  return `<article class="card"><div class="card-h"><span class="input-echo m">${esc(input)}</span><span class="badge">liftover ${esc(r.from)} → ${esc(r.to)}</span></div>
+    ${lines ? `<table class="f">${lines}</table>` : '<div class="note err">Aucune correspondance : la région n’existe pas dans l’autre version.</div>'}
+    ${r.maps.length > 1 ? '<div class="note warn">La région est découpée en plusieurs morceaux dans l’autre version.</div>' : ''}
+    <div class="note info">Position seule (sans allèles) : pour un variant complet, ajoutez REF>ALT, ex. chr3:10149921 C>T.</div></article>`;
+}
+
+async function run() {
+  const lines = $('inp').value.split(/\n/).map((l) => l.trim()).filter(Boolean);
+  const out = $('results');
+  out.innerHTML = ''; ROWS.length = 0; $('bar').classList.remove('on');
+  if (!lines.length) { $('statusText').textContent = 'Collez au moins un variant.'; return; }
+  const build = +$('build').value, deftx = $('deftx').value.trim();
+  store('nomenclature:prefs', { build, deftx });
+  $('goBtn').disabled = true;
+  const todo = lines.slice(0, 200);
+  // Une case par entrée, dans l’ordre, remplie dès que son résultat arrive
+  const slots = todo.map(() => { const d = document.createElement('div'); d.className = 'slot'; out.appendChild(d); return d; });
+  const byInput = new Map();
+  let done = 0, next = 0;
+  const tick = () => { $('statusText').innerHTML = `<span class="spin"></span> ${done} / ${todo.length} entrée(s) traitée(s)…`; };
+  tick();
+  async function handle(line) {
+    const parsed = parseLine(line, build, deftx);
+    if (!parsed) return '';
+    const items = Array.isArray(parsed) ? parsed : [parsed];
+    let html = '';
+    for (const it of items) {
+      if (it.kind === 'error') { html += renderError(line, it.msg); continue; }
+      try {
+        if (it.kind === 'region') { html += renderRegion(line, await liftRegion(it)); continue; }
+        const notes = [];
+        const alleles = await processItem(it, notes);
+        if (!alleles.length) throw new Error('aucun allèle trouvé');
+        if (alleles.length > 1) notes.push({ t: 'info', m: `${alleles.length} allèles correspondent à cette entrée : une fiche par allèle.` });
+        for (const a of alleles.slice(0, 12)) {
+          const rec = await enrich({ spdi38: a.spdi38, rs: a.rs, hgvsc: a.hgvsc, notes: [] });
+          html += renderCard(line + (alleles.length > 1 ? `  →  ${a.spdi38.del || '-'}>${a.spdi38.ins || '-'}` : ''), rec, notes, line);
+        }
+      } catch (e) {
+        html += renderError(line, e.message || String(e));
+      }
+    }
+    return html;
+  }
+  async function worker() {
+    while (next < todo.length) {
+      const i = next++;
+      slots[i].outerHTML = (await handle(todo[i])) || '';
+      done++; tick();
+    }
+  }
+  await Promise.all([worker(), worker(), worker()]);
+  $('goBtn').disabled = false;
+  $('statusText').textContent = `${done} entrée(s) traitée(s)${lines.length > 200 ? ' (limité aux 200 premières)' : ''}.`;
+  // Ordre des lignes d’export = ordre d’affichage
+  ROWS.sort((a, b) => todo.indexOf(a.line) - todo.indexOf(b.line));
+  if (ROWS.length) $('bar').classList.add('on');
+}
+
+/* ───────── Copie, export ───────── */
+async function copy(text, btn) {
+  try { await navigator.clipboard.writeText(text); }
+  catch (_) {
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (__) {} ta.remove();
+  }
+  if (btn) { const t = btn.textContent; btn.textContent = 'Copié'; btn.classList.add('done'); setTimeout(() => { btn.textContent = t; btn.classList.remove('done'); }, 1200); }
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-copy]');
+  if (b) copy(b.dataset.copy, b);
+});
+$('copyAtlas').addEventListener('click', (e) => copy(ROWS.map((r) => r.f.atlas).filter(Boolean).join('\n'), e.currentTarget));
+$('csvBtn').addEventListener('click', () => {
+  const head = ['entree', 'gene', 'consequence', 'atlas_grch38', 'hgvs_c_mane', 'hgvs_p_mane', 'hgvs_c_ensembl', 'rsid', 'hgvs_g_grch38', 'spdi_grch38', 'gnomad_grch38', 'gtex', 'grch37', 'hgvs_g_grch37', 'remarques'];
+  const q = (x) => `"${String(x ?? '').replace(/"/g, '""')}"`;
+  const lines = [head.join(',')].concat(ROWS.map(({ input, rec, f }) => [
+    input, rec.gene, rec.csq, f.atlas, rec.maneC, rec.maneP, rec.enstC, (rec.rs || []).join(' '), rec.hgvsg38,
+    rec.spdi38 ? spdiStr(rec.spdi38) : '', f.gnomad, f.gtex, f.g37, rec.hgvsg37, rec.notes.map((n) => n.m).join(' | '),
+  ].map(q).join(',')));
+  const blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'variants_convertis.csv'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+
+/* ───────── Exemples, préférences ───────── */
+const EXAMPLES = [
+  ['NM_000551.4:c.414A>G', null],
+  ['VHL:p.R167W', null],
+  ['rs28940298', null],
+  ['3-10149921-C-T', null],
+  ['chr3:10191605 C>T (GRCh37)', null],
+  ['NC_000003.11:g.10191506C>T', null],
+  ['chr3_10149822_C_T_b38', null],
+  ['c.341-2A>T', 'NM_000551.4'],
+  ['chr3:10141764-10153676', null],
+];
+for (const [ex, tx] of EXAMPLES) {
+  const b = document.createElement('button');
+  b.className = 'chip'; b.type = 'button'; b.textContent = ex;
+  b.addEventListener('click', () => {
+    const cur = $('inp').value.trim();
+    $('inp').value = (cur ? cur + '\n' : '') + ex;
+    if (tx && !$('deftx').value.trim()) $('deftx').value = tx;
+    $('inp').focus();
+  });
+  $('examples').appendChild(b);
+}
+const prefs = load('nomenclature:prefs');
+if (prefs) { if (prefs.build) $('build').value = String(prefs.build); if (prefs.deftx) $('deftx').value = prefs.deftx; }
+$('goBtn').addEventListener('click', run);
+$('clearBtn').addEventListener('click', () => { $('inp').value = ''; $('results').innerHTML = ''; ROWS.length = 0; $('bar').classList.remove('on'); $('statusText').textContent = ''; $('inp').focus(); });
+$('inp').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) run(); });
+</script>
+</body>
+</html>
