@@ -18,6 +18,9 @@
   --blob-3: rgba(255, 210, 190, .45);
   --glass: rgba(255, 255, 255, .55);
   --glass-2: rgba(255, 255, 255, .72);
+  --tile: rgba(255, 255, 255, .80);
+  --tile-hi: rgba(255, 255, 255, .96);
+  --field: rgba(255, 255, 255, .6);
   --glass-edge: rgba(255, 255, 255, .85);
   --hair: rgba(20, 70, 90, .10);
   --text: #0e2a33;
@@ -44,6 +47,9 @@
     --blob-3: rgba(30, 200, 160, .18);
     --glass: rgba(20, 45, 60, .45);
     --glass-2: rgba(30, 60, 78, .6);
+    --tile: rgba(20, 44, 58, .78);
+    --tile-hi: rgba(30, 62, 80, .92);
+    --field: rgba(120, 200, 215, .10);
     --glass-edge: rgba(160, 230, 240, .14);
     --hair: rgba(160, 230, 240, .10);
     --text: #e4f5f8;
@@ -70,6 +76,9 @@
   --blob-3: rgba(30, 200, 160, .18);
   --glass: rgba(20, 45, 60, .45);
   --glass-2: rgba(30, 60, 78, .6);
+  --tile: rgba(20, 44, 58, .78);
+  --tile-hi: rgba(30, 62, 80, .92);
+  --field: rgba(120, 200, 215, .10);
   --glass-edge: rgba(160, 230, 240, .14);
   --hair: rgba(160, 230, 240, .10);
   --text: #e4f5f8;
@@ -111,80 +120,87 @@ a { color: inherit; }
   box-shadow: var(--shadow);
 }
 
-header { padding: 48px 0 8px; }
-.top { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-.who { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px 6px 6px; border-radius: 999px; font-size: 13px; color: var(--muted); }
-.who .av { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; display: grid; place-items: center; font-size: 11px; font-weight: 800; }
-.who b { color: var(--text); font-weight: 700; }
-.theme-btn { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; color: var(--muted); display: grid; place-items: center; }
-.theme-btn svg { width: 18px; height: 18px; }
-h1 { margin: 26px 0 0; font-size: clamp(36px, 6vw, 52px); font-weight: 800; letter-spacing: -.035em; line-height: 1; }
-h1 span { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.count { color: var(--faint); font-weight: 500; font-size: .5em; letter-spacing: 0; margin-left: 8px; vertical-align: middle; }
-
-.controls { display: flex; gap: 10px; margin: 26px 0 8px; }
-.search { position: relative; flex: 1; display: flex; border-radius: 999px; }
-.search input { width: 100%; height: 50px; border: 0; background: none; border-radius: 999px; padding: 0 20px 0 48px; color: var(--text); font: inherit; font-size: 15px; }
+/* ---------- top bar: identity · search · theme, always in reach ---------- */
+header { position: sticky; top: 0; z-index: 5; padding: 14px 0 10px; }
+.bar { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 999px; }
+.who { display: inline-flex; align-items: center; gap: 10px; padding: 0 8px 0 0; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.who .av { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+.who h1 { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -.01em; color: var(--text); }
+.search { position: relative; flex: 1; min-width: 0; display: flex; border-radius: 999px; background: var(--field); border: 1px solid var(--hair); }
+.search input { width: 100%; height: 42px; border: 0; background: none; border-radius: 999px; padding: 0 44px 0 42px; color: var(--text); font: inherit; font-size: 15px; }
 .search input::placeholder { color: var(--faint); }
-.search input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
-.search svg { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--faint); }
-.view { display: flex; gap: 2px; padding: 4px; border-radius: 999px; }
-.view button { width: 42px; border: 0; border-radius: 999px; background: none; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
-.view button[aria-pressed="true"] { background: var(--glass-2); color: var(--accent); box-shadow: 0 2px 8px -2px rgba(10,60,80,.25); }
-.view svg { width: 18px; height: 18px; }
-.status { font-size: 12.5px; color: var(--faint); margin: 6px 6px 18px; min-height: 18px; }
-.status b { color: var(--muted); }
+.search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--faint); }
+.search kbd { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
+kbd { font: 600 11px/1 ui-monospace, monospace; color: var(--faint); border: 1px solid var(--hair); border-radius: 6px; padding: 4px 6px; background: var(--glass); }
+.search input:focus ~ kbd { display: none; }
+.theme-btn { flex: none; width: 42px; height: 42px; border-radius: 50%; border: 0; background: none; cursor: pointer; color: var(--muted); display: grid; place-items: center; }
+.theme-btn:hover { background: var(--field); color: var(--accent); }
+.theme-btn svg { width: 18px; height: 18px; }
 
-.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); padding-bottom: 56px; }
-.card {
-  position: relative; border-radius: 22px; padding: 18px;
-  display: flex; flex-direction: column; gap: 12px;
-  background: var(--glass);
+/* ---------- groups of tiles ---------- */
+main { padding: 10px 0 40px; }
+.group { margin-top: 22px; }
+.group-h { display: flex; align-items: center; gap: 8px; margin: 0 4px 10px; font-size: 12px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.group-h .dot { width: 9px; height: 9px; border-radius: 3px; background: linear-gradient(135deg, var(--c1), var(--c2)); }
+.group-h .n { font-weight: 600; letter-spacing: 0; color: var(--faint); }
+.tiles { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
+
+[data-cat="variants"] { --c1: #0b8a99; --c2: #3a7bd5; }
+[data-cat="seq"]      { --c1: #5b54d6; --c2: #9461e6; }
+[data-cat="clinic"]   { --c1: #c94a4a; --c2: #df7a36; }
+[data-cat="lab"]      { --c1: #1c8f63; --c2: #4aa83f; }
+[data-cat="other"]    { --c1: #54707d; --c2: #7a93a0; }
+[data-cat="pinned"]   { --c1: #d19a12; --c2: #e8b93a; }
+
+.tile {
+  position: relative; display: flex; align-items: center; gap: 14px;
+  min-height: 72px; padding: 12px 12px 12px 14px; border-radius: 18px;
+  background: var(--tile);
   -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
   border: 1px solid var(--glass-edge); box-shadow: var(--shadow);
-  transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease, background .25s ease;
+  transition: transform .18s cubic-bezier(.2,.8,.2,1), background .18s ease, border-color .18s ease;
 }
-.card:hover { transform: translateY(-4px); background: var(--glass-2); box-shadow: var(--shadow), 0 24px 40px -20px rgba(11,138,153,.45); }
-.card:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
-.card-top { display: none; }
-.card-body { display: flex; flex-direction: column; gap: 12px; flex: 1; }
-.card-head { display: flex; gap: 14px; align-items: center; }
+.tile:hover { transform: translateY(-2px); background: var(--tile-hi); border-color: var(--c1); }
+.tile:focus-within, .tile.first { outline: 2px solid var(--accent); outline-offset: 2px; }
 .mono {
-  flex: none; width: 46px; height: 46px; border-radius: 14px;
+  flex: none; width: 44px; height: 44px; border-radius: 13px;
   display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 15px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 6px 14px -6px rgba(11,138,153,.6);
+  background: linear-gradient(135deg, var(--c1), var(--c2));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
 }
-.title { min-width: 0; flex: 1; }
-.title h2 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.txt { min-width: 0; flex: 1; }
+.txt h3 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.txt p { margin: 2px 0 0; color: var(--muted); font-size: 13.5px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .open { text-decoration: none; }
 .open::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
 .open:focus { outline: none; }
-.desc { margin: 0; color: var(--muted); font-size: 14px; flex: 1; }
-.card-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 12.5px; color: var(--faint); }
-.card-foot .path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.code { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; text-decoration: none; color: var(--muted); background: var(--glass-2); border: 1px solid var(--hair); font-weight: 600; }
-.code:hover { color: var(--accent); }
-.code svg { width: 13px; height: 13px; }
 
-.grid.list { grid-template-columns: 1fr; gap: 10px; }
-.grid.list .card { flex-direction: row; align-items: center; padding: 12px 16px; border-radius: 18px; }
-.grid.list .card-body { flex-direction: row; align-items: center; gap: 18px; }
-.grid.list .card-head { width: 230px; flex: none; }
-.grid.list .mono { width: 36px; height: 36px; border-radius: 11px; font-size: 13px; }
+/* secondary actions stay out of the way until the tile is hovered */
+.acts { position: relative; z-index: 1; flex: none; display: flex; flex-direction: column; gap: 2px; }
+.act { width: 30px; height: 30px; border: 0; border-radius: 9px; background: none; color: var(--faint); cursor: pointer; display: grid; place-items: center; opacity: 0; transition: opacity .15s ease; }
+.act svg { width: 15px; height: 15px; }
+.act:hover { background: var(--field); color: var(--accent); }
+.act:focus-visible { outline: 2px solid var(--accent); opacity: 1; }
+.tile:hover .act, .tile:focus-within .act { opacity: 1; }
+.act.pin[aria-pressed="true"] { opacity: 1; color: #d19a12; }
+.act.pin[aria-pressed="true"] svg { fill: currentColor; }
+@media (hover: none) { .act { opacity: .7; } }
+.tile .enter { flex: none; }
 
-.empty { grid-column: 1 / -1; text-align: center; padding: 48px; border-radius: 22px; color: var(--muted); background: var(--glass); }
-footer { padding: 18px 4px 32px; font-size: 12.5px; color: var(--faint); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.empty { text-align: center; padding: 48px 16px; margin-top: 22px; border-radius: 18px; color: var(--muted); background: var(--tile); border: 1px solid var(--glass-edge); }
+footer { padding: 14px 4px 32px; font-size: 12.5px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px 18px; }
 footer a { color: var(--muted); }
+.status b { color: var(--text); }
 .hidden { display: none !important; }
 @media (prefers-reduced-motion: reduce) {
-  .card { transition: none; }
-  .card:hover { transform: none; }
+  .tile, .act { transition: none; }
+  .tile:hover { transform: none; }
 }
-@media (max-width: 640px) {
-  .grid.list .card { flex-direction: column; align-items: stretch; gap: 10px; }
-  .grid.list .card-body { flex-direction: column; align-items: stretch; gap: 6px; }
-  .grid.list .card-head { width: auto; }
+@media (max-width: 560px) {
+  .who span { display: none; }
+  .search kbd { display: none; }
+  .search input { padding-right: 16px; }
 }
 </style>
 </head>
@@ -192,29 +208,23 @@ footer a { color: var(--muted); }
 <canvas id="scene" aria-hidden="true"></canvas>
 <div class="wrap">
   <header>
-    <div class="top">
-      <div class="who glass"><span class="av">SR</span><b>Soufiyan Rehioui</b> · Medical genetics</div>
-      <button class="theme-btn glass" id="themeBtn" type="button" aria-label="Toggle light/dark theme">
+    <div class="bar glass">
+      <div class="who"><span class="av" aria-hidden="true">SR</span><h1>Tools</h1><span>· Soufiyan Rehioui</span></div>
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search tools…" autocomplete="off" aria-label="Search tools">
+        <kbd aria-hidden="true">/</kbd>
+      </label>
+      <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle light/dark theme">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
       </button>
     </div>
-    <h1><span>Tools</span><span class="count" id="count">--</span></h1>
-    <div class="controls">
-      <label class="search glass">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Search tools…" autocomplete="off" aria-label="Search tools">
-      </label>
-      <div class="view glass" id="view" role="group" aria-label="Layout">
-        <button type="button" data-view="grid" aria-pressed="true" aria-label="Cards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></button>
-        <button type="button" data-view="list" aria-pressed="false" aria-label="List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></button>
-      </div>
-    </div>
-    <div class="status" id="status" aria-live="polite"></div>
   </header>
-  <main class="grid" id="grid" aria-label="Tools"></main>
+  <main id="grid" aria-label="Tools"></main>
   <footer>
-    <span>© <span id="year">2026</span> Soufiyan Rehioui. All rights reserved.</span>
-    <a id="ghLink" href="#" target="_blank" rel="noopener">All repositories →</a>
+    <span class="status" id="status" aria-live="polite"></span>
+    <span>Type to search · Enter opens the first match · ☆ pins a tool to the top</span>
+    <span>© <span id="year">2026</span> Soufiyan Rehioui. All rights reserved. · <a id="ghLink" href="#" target="_blank" rel="noopener">All repositories →</a></span>
   </footer>
 </div>
 <script>
@@ -224,43 +234,63 @@ footer a { color: var(--muted); }
 
 const GITHUB_USER = 'ClaireValtin';
 
+/* Sections of the page, in display order. Each tool goes in the section
+   named by its `cat`; anything without one lands in "Other". */
+const CATEGORIES = [
+  { id: 'variants', label: 'Variants' },
+  { id: 'seq',      label: 'Sequencing & primers' },
+  { id: 'clinic',   label: 'Clinic & references' },
+  { id: 'lab',      label: 'Lab bench' },
+  { id: 'other',    label: 'Other' },
+];
+
 /* Nice names/descriptions for known tools. Each entry matches repo
    names by regex, so a rename (e.g. Ideograms → Idiograms) still works.
    Leave out `desc` to use the repo's GitHub description.
    Any public repo with GitHub Pages that matches nothing here still gets
-   a card, using its GitHub description. */
+   a tile in "Other", using its GitHub description. */
 const CATALOG = [
-  { match: /id[ei]ogram/i,          name: 'Idiograms',
-    desc: 'Chromosome idiograms, FISH probes and ISCN builder.' },
-  { match: /globin/i,               name: 'GlobinConsole',
-    desc: 'HBB genotypes and haemoglobin electrophoresis, interpreted.' },
-  { match: /hcs.?atlas/i,           name: 'HCSAtlas',
-    desc: 'Congenital adrenal hyperplasia quick reference.' },
-  { match: /acmg/i,                 name: 'Atelier ACMG',
-    desc: 'ACMG/AMP classification of germline variants.' },
-  { match: /variant.?one/i,         name: 'VariantOne',
+  { match: /variant.?one/i,         name: 'VariantOne',        cat: 'variants',
     desc: 'One variant, every database, one page.' },
-  { match: /gene.?doc/i,            name: 'GeneDoc',
-    desc: 'MANE gene sequence and CDS, exported to Word.' },
-  { match: /primer.?scope/i,        name: 'PrimerScope',
-    desc: 'Sanger and nested PCR primer design, with SNP check.' },
-  { match: /pedigree/i,             name: 'PedigreeFes',
-    desc: 'Pedigree drawing editor.' },
-  { match: /mucovisc|cftr/i,        name: 'Mucoviscidose',
-    desc: 'CFTR variant lookup and cystic fibrosis guide.' },
-  { match: /sanger/i,               name: 'SangerScope',
+  { match: /acmg/i,                 name: 'Atelier ACMG',      cat: 'variants',
+    desc: 'ACMG/AMP classification of germline variants.' },
+  { match: /nomenclat/i,            name: 'Nomenclature',      cat: 'variants',
+    desc: 'Variant converter: HGVS, rsID, VCF, SPDI and gnomAD, in GRCh38 and GRCh37.' },
+
+  { match: /sanger/i,               name: 'SangerScope',       cat: 'seq',
     desc: 'Sanger variant analysis against the MANE reference.' },
-  { match: /fennec/i,               name: 'FennecTrace',
+  { match: /fennec/i,               name: 'FennecTrace',       cat: 'seq',
     desc: 'AB1 chromatogram viewer.' },
-  { match: /ab1|chromat|electroph/i, name: 'AB1 Viewer',
+  { match: /ab1|chromat|electroph/i, name: 'AB1 Viewer',       cat: 'seq',
     desc: 'Chromatogram viewer: traces, Phred scores, reverse-complement, select & BLAST.' },
-  { match: /spectr|onco/i,          name: 'Spectres tumoraux',
+  { match: /primer.?scope/i,        name: 'PrimerScope',       cat: 'seq',
+    desc: 'Sanger and nested PCR primer design, with SNP check.' },
+  { match: /gene.?doc/i,            name: 'GeneDoc',           cat: 'seq',
+    desc: 'MANE gene sequence and CDS, exported to Word.' },
+
+  { match: /hpo/i,                  name: 'HPO Picker',        cat: 'clinic',
+    desc: 'Browse HPO terms, tick a patient\'s phenotype, export the list.' },
+  { match: /pedigree/i,             name: 'PedigreeFes',       cat: 'clinic',
+    desc: 'Pedigree drawing editor.' },
+  { match: /id[ei]ogram/i,          name: 'Idiograms',         cat: 'clinic',
+    desc: 'Chromosome idiograms, FISH probes and ISCN builder.' },
+  { match: /globin/i,               name: 'GlobinConsole',     cat: 'clinic',
+    desc: 'HBB genotypes and haemoglobin electrophoresis, interpreted.' },
+  { match: /mucovisc|cftr/i,        name: 'Mucoviscidose',     cat: 'clinic',
+    desc: 'CFTR variant lookup and cystic fibrosis guide.' },
+  { match: /hcs.?atlas/i,           name: 'HCSAtlas',          cat: 'clinic',
+    desc: 'Congenital adrenal hyperplasia quick reference.' },
+  { match: /spectr|onco/i,          name: 'Spectres tumoraux', cat: 'clinic',
     desc: 'Hereditary cancer syndromes: tumour spectra by gene or organ.' },
-  { match: /^lmc$/i,                name: 'LMC' },
-  { match: /culture.?oh/i,          name: 'Culture OH' },
-  { match: /inventor|stock/i,       name: 'Lab inventory',
+
+  { match: /calculat/i,             name: 'CalculatorGen',     cat: 'lab',
+    desc: 'Lab calculators: NGS dilution, culture seeding volume, CML residual disease.' },
+  { match: /^lmc$/i,                name: 'LMC',               cat: 'lab' },
+  { match: /culture.?oh/i,          name: 'Culture OH',        cat: 'lab' },
+  { match: /inventor|stock/i,       name: 'Lab inventory',     cat: 'lab',
     desc: 'Consumption and restocking of lab products.' },
-  { match: /ledger|expense|budget/i, name: 'Ledger',
+
+  { match: /ledger|expense|budget/i, name: 'Ledger',           cat: 'other',
     desc: 'Expenses and savings tracker.' },
 ];
 
@@ -271,10 +301,10 @@ const HIDE = [
 ];
 
 /* Sites that are NOT GitHub Pages repos (e.g. later, on your home server).
-   Example: { name: 'Inventory (home)', url: 'https://…', desc: '…' } */
+   Example: { name: 'Inventory (home)', url: 'https://…', cat: 'lab', desc: '…' } */
 const MANUAL = [
   { name: 'Primer Inventory', url: 'https://primer-inventory.rehiouisoufiyan.workers.dev/',
-    desc: 'PCR and sequencing primer catalogue, with linked PCR protocols.',
+    cat: 'seq', desc: 'PCR and sequencing primer catalogue, with linked PCR protocols.',
     code: 'https://github.com/ClaireValtin/PrimerInventory' },
 ];
 
@@ -291,7 +321,9 @@ const FALLBACK = [
 const CACHE_KEY = 'tools-launcher:repos:v1';
 const user = GITHUB_USER.toLowerCase();
 const $ = (id) => document.getElementById(id);
-const grid = $('grid'), statusEl = $('status'), q = $('q'), viewEl = $('view');
+const PINS_KEY = 'tools-launcher:pins';
+const grid = $('grid'), statusEl = $('status'), q = $('q');
+const catLabel = (id) => (CATEGORIES.find((c) => c.id === id) || {}).label || '';
 $('ghLink').href = `https://github.com/${GITHUB_USER}?tab=repositories`;
 $('year').textContent = new Date().getFullYear();
 
@@ -308,6 +340,7 @@ function store(key, val) {
 function load(key) {
   try { return JSON.parse(localStorage.getItem(key)); } catch (_) { return null; }
 }
+const pins = new Set(Array.isArray(load(PINS_KEY)) ? load(PINS_KEY) : []);
 
 /* ---------- theme ---------- */
 const themeListeners = [];
@@ -427,6 +460,8 @@ function toTool(r) {
   const name = meta.name || prettify(r.repo);
   return {
     name,
+    key: r.repo,
+    cat: CATEGORIES.some((c) => c.id === meta.cat) ? meta.cat : 'other',
     desc: meta.desc || r.desc || 'No description yet.',
     url: r.url,
     code: r.code || null,
@@ -453,34 +488,56 @@ function fromApi(list) {
 function setTools(slim) {
   const hide = new Set(HIDE.concat(SELF_REPO).map((h) => h.toLowerCase()));
   const manual = MANUAL.map((m) => ({
-    name: m.name, desc: m.desc || '', url: m.url,
+    name: m.name, key: m.name, desc: m.desc || '', url: m.url,
+    cat: CATEGORIES.some((c) => c.id === m.cat) ? m.cat : 'other',
     code: m.code || null, pushed: null, mono: initials(m.name),
   }));
   tools = slim.filter((r) => !hide.has(String(r.repo).toLowerCase()))   // also cleans old caches
     .map(toTool).concat(manual).sort((a, b) => a.name.localeCompare(b.name));
-  tools.forEach((t, i) => { t.no = String(i + 1).padStart(2, '0'); });
-  $('count').textContent = String(tools.length).padStart(2, '0') + '';
+  q.placeholder = `Search ${tools.length} tools…`;
   render();
 }
 
 /* ---------- rendering ---------- */
-function ago(iso) {
-  if (!iso) return '';
-  const s = (Date.now() - new Date(iso)) / 1000;
-  const units = [[31536000, 'y'], [2592000, 'mo'], [604800, 'w'], [86400, 'd'], [3600, 'h'], [60, 'min']];
-  for (const [sec, u] of units) if (s >= sec) return `updated ${Math.floor(s / sec)}${u} ago`;
-  return 'updated just now';
-}
-function shortUrl(u) {
-  try { const x = new URL(u); return (x.host + x.pathname).replace(/\/$/, ''); } catch (_) { return u; }
-}
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 function visible() {
   const term = q.value.trim().toLowerCase();
-  return tools.filter((t) =>
-    !term || (t.name + ' ' + t.desc + ' ' + t.url).toLowerCase().includes(term));
+  if (!term) return tools;
+  // best hits first: name starts with the term, then name contains it, then anything else
+  const rank = (t) => { const i = t.name.toLowerCase().indexOf(term); return i === 0 ? 0 : i > 0 ? 1 : 2; };
+  return tools
+    .filter((t) => (t.name + ' ' + t.desc + ' ' + t.url + ' ' + catLabel(t.cat)).toLowerCase().includes(term))
+    .sort((a, b) => rank(a) - rank(b));
+}
+const ICON_CODE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>';
+const ICON_STAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.1-6.1L3.2 9.4l6.1-.8z"/></svg>';
+function tile(t, first) {
+  const on = pins.has(t.key);
+  return `
+    <article class="tile${first ? ' first' : ''}" data-cat="${esc(t.cat)}">
+      <div class="mono" aria-hidden="true">${esc(t.mono)}</div>
+      <div class="txt">
+        <h3><a class="open" href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></h3>
+        <p>${esc(t.desc)}</p>
+      </div>
+      ${first ? '<kbd class="enter" aria-hidden="true">↵</kbd>' : ''}
+      <div class="acts">
+        <button class="act pin" type="button" data-key="${esc(t.key)}" aria-pressed="${on}"
+          title="${on ? 'Unpin' : 'Pin to top'}" aria-label="${on ? 'Unpin' : 'Pin'} ${esc(t.name)}">${ICON_STAR}</button>
+        ${t.code ? `<a class="act" href="${esc(t.code)}" target="_blank" rel="noopener"
+          title="Source code" aria-label="Source code of ${esc(t.name)}">${ICON_CODE}</a>` : ''}
+      </div>
+    </article>`;
+}
+function group(id, label, list, markFirst) {
+  if (!list.length) return '';
+  return `
+    <section class="group" data-cat="${id}">
+      <h2 class="group-h"><span class="dot" aria-hidden="true"></span>${esc(label)} <span class="n">${list.length}</span></h2>
+      <div class="tiles">${list.map((t, i) => tile(t, markFirst && i === 0)).join('')}</div>
+    </section>`;
 }
 function render() {
   const list = visible();
@@ -488,36 +545,23 @@ function render() {
     grid.innerHTML = `<div class="empty">${tools.length ? 'No tool matches that search.' : 'No tools found yet.'}</div>`;
     return;
   }
-  grid.innerHTML = list.map((t, i) => `
-    <article class="card" style="--i:${i}">
-      <div class="card-top" aria-hidden="true"><span>№ ${t.no}</span><span class="live">Live</span></div>
-      <div class="card-body">
-        <div class="card-head">
-          <div class="mono" aria-hidden="true">${esc(t.mono)}</div>
-          <div class="title">
-            <h2><a class="open" href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)}</a></h2>
-          </div>
-        </div>
-        <p class="desc">${esc(t.desc)}</p>
-      </div>
-      <div class="card-foot">
-        <span class="path" title="${esc(t.url)}">${t.pushed ? ago(t.pushed) : esc(shortUrl(t.url))}</span>
-        ${t.code ? `<a class="code" href="${esc(t.code)}" target="_blank" rel="noopener" aria-label="Source code of ${esc(t.name)}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>Code</a>` : ''}
-      </div>
-    </article>`).join('');
-}
-function setView(v) {
-  grid.classList.toggle('list', v === 'list');
-  for (const b of viewEl.querySelectorAll('button')) b.setAttribute('aria-pressed', b.dataset.view === v);
+  if (q.value.trim()) {                          // searching: one flat list, first hit ready for Enter
+    grid.innerHTML = group('results', 'Results', list, true);
+    return;
+  }
+  grid.innerHTML =
+    group('pinned', 'Pinned', list.filter((t) => pins.has(t.key)), false) +
+    CATEGORIES.map((c) => group(c.id, c.label, list.filter((t) => t.cat === c.id), false)).join('');
 }
 function setStatus(html) { statusEl.innerHTML = html; }
 
 /* ---------- events ---------- */
-setView(load('tools-launcher:view') === 'list' ? 'list' : 'grid');
-viewEl.addEventListener('click', (e) => {
-  const b = e.target.closest('button'); if (!b) return;
-  setView(b.dataset.view); store('tools-launcher:view', b.dataset.view);
+grid.addEventListener('click', (e) => {
+  const b = e.target.closest('.pin'); if (!b) return;
+  const key = b.dataset.key;
+  pins.has(key) ? pins.delete(key) : pins.add(key);
+  store(PINS_KEY, [...pins]);
+  render();
 });
 q.addEventListener('input', render);
 q.addEventListener('keydown', (e) => {
@@ -526,10 +570,12 @@ q.addEventListener('keydown', (e) => {
     if (first) window.open(first.url, '_blank', 'noopener');
   } else if (e.key === 'Escape') { q.value = ''; render(); q.blur(); }
 });
-document.addEventListener('keydown', (e) => {
-  if (e.key === '/' && document.activeElement !== q && !e.ctrlKey && !e.metaKey) {
-    e.preventDefault(); q.focus();
-  }
+document.addEventListener('keydown', (e) => {    // just start typing: the search box takes it
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const el = document.activeElement;
+  if (el === q || (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName))) return;
+  if (e.key === '/') { e.preventDefault(); q.focus(); }
+  else if (e.key.length === 1 && /\S/.test(e.key)) q.focus();
 });
 
 /* ---------- boot: cached list first, then refresh from GitHub ---------- */
