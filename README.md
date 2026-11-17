@@ -24,7 +24,7 @@ Open the link above. Start typing to filter the list, press **Enter** to open th
 
 ## License & citation
 
-© 2026 Soufiyan Rehioui. All rights reserved.
+© 2026 Rehioui Soufiyan. All rights reserved.
 
 You're welcome to explore this code. If you'd like to use, adapt, or share it, please get in touch first: rehiouisoufiyan@gmail.com
 
